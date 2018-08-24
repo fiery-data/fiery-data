@@ -1,0 +1,11 @@
+import { FierySource, FieryFields } from './types';
+export declare function isObject(x?: any): boolean;
+export declare function isFunction(x?: any): boolean;
+export declare function isArray(x?: any): x is Array<any>;
+export declare function isDate(x?: any): x is Date;
+export declare function isDefined(x?: any): boolean;
+export declare function coalesce(a?: any, b?: any): any;
+export declare function isCollectionSource(source: FierySource): boolean;
+export declare function getFields(fields?: FieryFields, otherwise?: string[]): string[] | undefined;
+export declare function forEach(iterable: any, callback: (item: any, key: any, iterable: any) => any): boolean;
+export declare function isEqual(a: any, b: any): boolean;

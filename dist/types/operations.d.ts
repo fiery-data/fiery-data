@@ -1,0 +1,15 @@
+import * as firebase from 'firebase';
+import { FieryInstance, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields } from './types';
+declare type CollectionReference = firebase.firestore.CollectionReference;
+export declare function update(this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>;
+export declare function sync(this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>;
+export declare function remove(this: FieryInstance, data: FieryData, excludeSubs?: boolean): Promise<void>;
+export declare function clear(this: FieryInstance, data: FieryData, props: FieryFields): Promise<void[]>;
+export declare function getChanges(this: FieryInstance, data: FieryData, fieldsOrEquality: FieryFields | FieryEquality, equalityOrNothing?: FieryEquality): Promise<FieryChanges>;
+export declare function ref(this: FieryInstance, data: FieryData, sub?: string): FierySource;
+export declare function create<T extends FieryData>(this: FieryInstance, name: string, initial?: FieryData): T;
+export declare function createSub<T extends FieryData>(this: FieryInstance, data: FieryData, sub: string, initial?: FieryData): T;
+export declare function build<T extends FieryData>(this: FieryInstance, name: string, initial?: FieryData): T;
+export declare function buildSub<T extends FieryData>(this: FieryInstance, data: FieryData, sub: string, initial?: FieryData): T;
+export declare function buildFromCollection<T extends FieryData>(collection: CollectionReference, entry: FieryEntry, initial?: FieryData): T;
+export {};
