@@ -218,6 +218,22 @@ export interface FieryMetadata
 
 }
 
+export type FieryRecordSync = (fields?: FieryFields) => Promise<void>
+
+export type FieryRecordUpdate = (fields?: FieryFields) => Promise<void>
+
+export type FieryRecordRemove = (excludeSubs: boolean) => Promise<void>
+
+export type FieryRecordRef = (sub?: string) => FierySource
+
+export type FieryRecordClear = (props: FieryFields) => Promise<void[]>
+
+export type FieryRecordCreate = <T extends FieryData>(sub: string, initial?: FieryData) => T
+
+export type FieryRecordBuild = <T extends FieryData>(sub: string, initial?: FieryData) => T
+
+export type FieryRecordChanges = (fieldsOrEquality: FieryFields | FieryEquality, equalityOrNothing?: FieryEquality) => Promise<FieryChanges>
+
 export interface FieryEntry
 {
 
@@ -237,22 +253,21 @@ export interface FieryEntry
 
   recordFunctions:
   {
-    sync: (fields?: FieryFields) => Promise<void>
+    sync: FieryRecordSync
 
-    update: (fields?: FieryFields) => Promise<void>
+    update: FieryRecordUpdate
 
-    remove: (excludeSubs: boolean) => Promise<void>
+    remove: FieryRecordRemove
 
-    ref: (sub?: string) => FierySource
+    ref: FieryRecordRef
 
-    clear: (props: FieryFields) => Promise<void[]>
+    clear: FieryRecordClear
 
-    create: <T extends FieryData>(sub: string, initial?: FieryData) => T
+    create: FieryRecordCreate
 
-    build: <T extends FieryData>(sub: string, initial?: FieryData) => T
+    build: FieryRecordBuild
 
-    getChanges: (fieldsOrEquality: FieryFields | FieryEquality,
-      equalityOrNothing?: FieryEquality) => Promise<FieryChanges>
+    getChanges: FieryRecordChanges
   }
 
   promise?: Promise<QuerySnapshot>
