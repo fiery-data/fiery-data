@@ -5,7 +5,6 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": [
-      "dom",
       "es6"
     ],
     "experimentalDecorators": true,
@@ -17,9 +16,9 @@
     "sourceMap": true,
     "declaration": true,
     "declarationDir": "types",
-    "outDir": "./dist/"
+    "outDir": "dist"
   },
   "include": [
-    "src/**/*.ts"
+    "src"
   ]
 }
