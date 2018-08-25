@@ -41,6 +41,7 @@ const NODE = {
   resolve: {
     extensions: [ '.ts' ]
   },
+  devtool: 'source-map',
   output: {
     filename: 'fiery-data.js',
     path: path.resolve(__dirname, 'dist'),
@@ -52,4 +53,4 @@ const NODE = {
   }
 }
 
-module.exports = WEB
+module.exports = NODE
