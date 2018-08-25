@@ -3,6 +3,12 @@
   <img src="https://avatars1.githubusercontent.com/u/42543587?s=200&v=4" alt="Fiery Data">  
 </p>
 
+<p align="center">
+<img src="https://img.shields.io/npm/v/vue-fiery.svg">
+<img src="https://img.shields.io/npm/l/vue-fiery.svg">
+<img src="https://travis-ci.org/ClickerMonkey/vue-fiery.svg?branch=master">
+</p>
+
 ## fiery-data
 
 A library which binds Firestore data to plain arrays and objects and keeps them in sync.
