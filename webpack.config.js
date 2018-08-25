@@ -53,4 +53,4 @@ const NODE = {
   }
 }
 
-module.exports = NODE
+module.exports = WEB

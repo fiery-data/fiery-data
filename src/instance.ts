@@ -8,7 +8,7 @@ import { globalOptions } from './options'
 import * as operations from './operations'
 
 
-export function getInstance (systemOverrides?: FierySystem): FieryInstance
+export function getInstance (systemOverrides?: Partial<FierySystem>): FieryInstance
 {
   const system = buildSystem(systemOverrides)
 

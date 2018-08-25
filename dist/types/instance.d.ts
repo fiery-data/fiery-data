@@ -1,2 +1,2 @@
 import { FierySystem, FieryInstance } from './types';
-export declare function getInstance(systemOverrides?: FierySystem): FieryInstance;
+export declare function getInstance(systemOverrides?: Partial<FierySystem>): FieryInstance;
