@@ -19,6 +19,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     library: 'FieryData',
     libraryTarget: 'umd',
-    libraryExport: 'default'
+    libraryExport: 'default',
+    globalObject: 'this'
   }
 };
