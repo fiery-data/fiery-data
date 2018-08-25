@@ -1,10 +1,11 @@
 {
     "name": "fiery-data",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "Philip Diffenderfer",
     "description": "A Typescript/JS library for interacting with Google Firebase Database and Firestore",
     "license": "MIT",
-    "main": "./dist/fiery-data.js",
+    "main": "dist/fiery-data.js",
+    "typings": "dist/types/index.d.ts",
     "scripts": {
         "dev": "webpack --mode development",
         "build": "webpack --mode production",
