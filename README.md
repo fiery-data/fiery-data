@@ -4,9 +4,9 @@
 </p>
 
 <p align="center">
-<img src="https://img.shields.io/npm/v/vue-fiery.svg">
-<img src="https://img.shields.io/npm/l/vue-fiery.svg">
-<img src="https://travis-ci.org/ClickerMonkey/vue-fiery.svg?branch=master">
+<img src="https://img.shields.io/npm/v/fiery-data.svg">
+<img src="https://img.shields.io/npm/l/fiery-data.svg">
+<img src="https://travis-ci.org/fiery-data/fiery-data.svg?branch=master">
 </p>
 
 ## fiery-data
