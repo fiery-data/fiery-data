@@ -123,9 +123,9 @@ export interface FieryInstance {
     clear: (data: FieryData, props: FieryFields) => Promise<void[]>;
     getChanges: (data: FieryData, fieldsOrEquality: FieryFields | FieryEquality, equalityOrNothing?: FieryEquality) => Promise<FieryChanges>;
     ref: (data: FieryData) => FierySource;
-    create: <T extends FieryData>(name: string, initial?: FieryData) => T;
+    create: <T extends FieryData>(target: string | FieryTarget, initial?: FieryData) => T;
     createSub: <T extends FieryData>(data: FieryData, sub: string, initial?: FieryData) => T;
-    build: <T extends FieryData>(name: string, initial?: FieryData) => T;
+    build: <T extends FieryData>(target: string | FieryTarget, initial?: FieryData) => T;
     buildSub: <T extends FieryData>(data: FieryData, sub: string, initial?: FieryData) => T;
 }
 export interface FieryMetadata {
@@ -136,6 +136,14 @@ export interface FieryMetadata {
     optionKey: string;
     options: FieryOptions;
 }
+export declare type FieryRecordSync = (fields?: FieryFields) => Promise<void>;
+export declare type FieryRecordUpdate = (fields?: FieryFields) => Promise<void>;
+export declare type FieryRecordRemove = (excludeSubs: boolean) => Promise<void>;
+export declare type FieryRecordRef = (sub?: string) => FierySource;
+export declare type FieryRecordClear = (props: FieryFields) => Promise<void[]>;
+export declare type FieryRecordCreate = <T extends FieryData>(sub: string, initial?: FieryData) => T;
+export declare type FieryRecordBuild = <T extends FieryData>(sub: string, initial?: FieryData) => T;
+export declare type FieryRecordChanges = (fieldsOrEquality: FieryFields | FieryEquality, equalityOrNothing?: FieryEquality) => Promise<FieryChanges>;
 export interface FieryEntry {
     name?: string;
     options: FieryOptions;
@@ -145,14 +153,14 @@ export interface FieryEntry {
     target?: FieryTarget;
     children: FieryCache;
     recordFunctions: {
-        sync: (fields?: FieryFields) => Promise<void>;
-        update: (fields?: FieryFields) => Promise<void>;
-        remove: (excludeSubs: boolean) => Promise<void>;
-        ref: (sub?: string) => FierySource;
-        clear: (props: FieryFields) => Promise<void[]>;
-        create: <T extends FieryData>(sub: string, initial?: FieryData) => T;
-        build: <T extends FieryData>(sub: string, initial?: FieryData) => T;
-        getChanges: (fieldsOrEquality: FieryFields | FieryEquality, equalityOrNothing?: FieryEquality) => Promise<FieryChanges>;
+        sync: FieryRecordSync;
+        update: FieryRecordUpdate;
+        remove: FieryRecordRemove;
+        ref: FieryRecordRef;
+        clear: FieryRecordClear;
+        create: FieryRecordCreate;
+        build: FieryRecordBuild;
+        getChanges: FieryRecordChanges;
     };
     promise?: Promise<QuerySnapshot>;
     off?: () => any;

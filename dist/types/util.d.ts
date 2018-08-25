@@ -1,6 +1,7 @@
 import { FierySource, FieryFields } from './types';
-export declare function isObject(x?: any): boolean;
-export declare function isFunction(x?: any): boolean;
+export declare function isObject(x?: any): x is Object;
+export declare function isFunction(x?: any): x is Function;
+export declare function isString(x?: any): x is string;
 export declare function isArray(x?: any): x is Array<any>;
 export declare function isDate(x?: any): x is Date;
 export declare function isDefined(x?: any): boolean;
