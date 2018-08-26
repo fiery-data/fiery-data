@@ -8,10 +8,6 @@ import { getOptionsByKey } from './options'
 
 
 
-type Firestore = firebase.firestore.Firestore
-
-
-
 export function isObject (x?: any): x is Object
 {
   return Object.prototype.toString.call(x) === '[object Object]'

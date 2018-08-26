@@ -10,13 +10,6 @@ import { getCacheForData, getCacheForReference } from './cache'
 
 
 
-type Firestore = firebase.firestore.Firestore
-type DocumentReference = firebase.firestore.DocumentReference
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot
-type CollectionReference = firebase.firestore.CollectionReference
-
-
-
 export function update (this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>
 {
   const cache: FieryCacheEntry | undefined = getCacheForData(data)
@@ -81,8 +74,8 @@ export function clear (this: FieryInstance, data: FieryData, props: FieryFields)
   if (cache && cache.ref)
   {
     const options: FieryOptions = cache.firstEntry.options
-    const ref: DocumentReference = cache.ref
-    const store: Firestore = ref.firestore
+    const ref: firebase.firestore.DocumentReference = cache.ref
+    const store: firebase.firestore.Firestore = ref.firestore
     const promises: Promise<void>[] = []
 
     const deleting: any = {}
@@ -134,11 +127,11 @@ export function getChanges (this: FieryInstance,
     const options: FieryOptions = cache.firstEntry.options
     const current: FieryData = encodeData(data, options, fields)
 
-    const getter: Promise<DocumentSnapshot> = cache.ref.get()
+    const getter: Promise<firebase.firestore.DocumentSnapshot> = cache.ref.get()
 
     return new Promise((resolve, reject) =>
     {
-      getter.then((doc: DocumentSnapshot) =>
+      getter.then((doc: firebase.firestore.DocumentSnapshot) =>
       {
         const encoded: FieryData = parseDocument(doc, options)
         const remote: FieryData = {}
@@ -174,7 +167,7 @@ export function ref (this: FieryInstance, data: FieryData, sub?: string): FieryS
 
   if (cache && cache.ref)
   {
-    const ref: DocumentReference = cache.ref
+    const ref: firebase.firestore.DocumentReference = cache.ref
 
     return sub ? ref.collection(sub) : ref
   }
@@ -214,7 +207,7 @@ export function build <T extends FieryData>(this: FieryInstance, target: string 
     {
       const entry: FieryEntry = this.entry[target]
 
-      return buildFromCollection (entry.source as CollectionReference, entry, initial)
+      return buildFromCollection (entry.source as firebase.firestore.CollectionReference, entry, initial)
     }
   }
   else
@@ -223,7 +216,7 @@ export function build <T extends FieryData>(this: FieryInstance, target: string 
 
     if (entry)
     {
-      return buildFromCollection (entry.source as CollectionReference, entry, initial)
+      return buildFromCollection (entry.source as firebase.firestore.CollectionReference, entry, initial)
     }
   }
 
@@ -237,7 +230,7 @@ export function buildSub <T extends FieryData>(this: FieryInstance, data: FieryD
   if (cache && cache.ref && sub in cache.sub)
   {
     const entry: FieryEntry = cache.sub[sub]
-    const ref: DocumentReference = cache.ref
+    const ref: firebase.firestore.DocumentReference = cache.ref
 
     return buildFromCollection(ref.collection(sub), entry, initial)
   }
@@ -245,7 +238,7 @@ export function buildSub <T extends FieryData>(this: FieryInstance, data: FieryD
   throw 'Cannot build in the sub collection ' + sub + + ', the parent data does not exist in the current $fiery instance or the sub collection is not defined in the options.'
 }
 
-export function buildFromCollection <T extends FieryData>(collection: CollectionReference, entry: FieryEntry, initial?: FieryData): T
+export function buildFromCollection <T extends FieryData>(collection: firebase.firestore.CollectionReference, entry: FieryEntry, initial?: FieryData): T
 {
   const options: FieryOptions = entry.options
   const ref = collection.doc()

@@ -8,6 +8,7 @@ import { removeCacheFromEntry } from './cache'
 import * as operations from './operations'
 
 
+
 export function closeEntry (entry: FieryEntry | null, remove: boolean = false): void
 {
   if (entry && entry.live)

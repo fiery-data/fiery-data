@@ -1,10 +1,8 @@
 import * as firebase from 'firebase';
 import { FieryInstance, FieryEntry, FieryCacheEntry, FieryCache, FieryData } from './types';
-declare type DocumentReference = firebase.firestore.DocumentReference;
-declare type DocumentSnapshot = firebase.firestore.DocumentSnapshot;
 export declare const globalCache: FieryCache;
-export declare function getCacheForReference(entry: FieryEntry, ref: DocumentReference): FieryCacheEntry;
-export declare function getCacheForDocument(entry: FieryEntry, doc: DocumentSnapshot): FieryCacheEntry;
+export declare function getCacheForReference(entry: FieryEntry, ref: firebase.firestore.DocumentReference): FieryCacheEntry;
+export declare function getCacheForDocument(entry: FieryEntry, doc: firebase.firestore.DocumentSnapshot): FieryCacheEntry;
 export declare function getCacheForData(data: FieryData): FieryCacheEntry | undefined;
 export declare function removeDataFromEntry(entry: FieryEntry, data: FieryData): void;
 export declare function removeCacheFromEntry(entry: FieryEntry, cache?: FieryCacheEntry): void;
@@ -15,4 +13,3 @@ export declare function destroyCache(cache: FieryCacheEntry): void;
 export declare function addSubs(cache: FieryCacheEntry, entry: FieryEntry): void;
 export declare function hasLiveSub(cache: FieryCacheEntry, sub: string): boolean;
 export declare function createRecord(data: FieryData, entry: FieryEntry): FieryData;
-export {};

@@ -8,25 +8,18 @@ import { getCacheForReference, removeDataFromEntry, destroyCache } from '../cach
 
 
 
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot
-type DocumentChange = firebase.firestore.DocumentChange
-type DocumentReference = firebase.firestore.DocumentReference
-type DocumentListenOptions = firebase.firestore.DocumentListenOptions
-
-
-
-type OnSnapshot = (querySnapshot: DocumentSnapshot) => any
+type OnSnapshot = (querySnapshot: firebase.firestore.DocumentSnapshot) => any
 
 
 
 export function factory (entry: FieryEntry): FieryData
 {
-  const source: DocumentReference = entry.source as DocumentReference
+  const source: firebase.firestore.DocumentReference = entry.source as firebase.firestore.DocumentReference
   const options: FieryOptions = entry.options
   const cache: FieryCacheEntry = getCacheForReference(entry, source)
   const initialTarget: FieryTarget | undefined = entry.target
 
-  const onSnapshot = (doc: DocumentSnapshot) =>
+  const onSnapshot = (doc: firebase.firestore.DocumentSnapshot) =>
   {
     handleDocumentUpdate(cache, entry, doc)
   }
@@ -47,7 +40,7 @@ export function factory (entry: FieryEntry): FieryData
   else
   {
     entry.off = source.onSnapshot(
-      options.liveOptions as DocumentListenOptions,
+      options.liveOptions as firebase.firestore.DocumentListenOptions,
       onSnapshot,
       options.onError
     )
@@ -56,7 +49,7 @@ export function factory (entry: FieryEntry): FieryData
   return entry.target as FieryData
 }
 
-export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry, doc: DocumentSnapshot): void
+export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry, doc: firebase.firestore.DocumentSnapshot): void
 {
   const options: FieryOptions = entry.options
   const system: FierySystem = entry.instance.system

@@ -3,18 +3,6 @@ import * as firebase from 'firebase'
 
 
 
-type Query = firebase.firestore.Query
-type QuerySnapshot = firebase.firestore.QuerySnapshot
-type GetOptions = firebase.firestore.GetOptions
-type Firestore = firebase.firestore.Firestore
-type QueryListenOptions = firebase.firestore.QueryListenOptions
-type DocumentListenOptions = firebase.firestore.DocumentListenOptions
-type DocumentReference = firebase.firestore.DocumentReference
-type CollectionReference = firebase.firestore.CollectionReference
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot
-
-
-
 export type FieryData = { [prop: string]: any }
 
 export type FieryMap = { [key: string]: FieryData }
@@ -23,7 +11,10 @@ export type FieryTarget = FieryData[] | FieryData | FieryMap
 
 export type FieryExclusions = { [field: string]: boolean }
 
-export type FierySource = Query | DocumentReference | CollectionReference
+export type FierySource =
+  firebase.firestore.Query |
+  firebase.firestore.DocumentReference |
+  firebase.firestore.CollectionReference
 
 export type FierySources = { [name: string]: FierySource }
 
@@ -74,7 +65,7 @@ export interface FieryOptions
 
   key?: string
 
-  query?: (source: CollectionReference) => Query
+  query?: (source: firebase.firestore.CollectionReference) => firebase.firestore.Query
 
   map?: boolean
 
@@ -135,9 +126,9 @@ export interface FieryOptions
 
   propValue: string
 
-  onceOptions?: GetOptions
+  onceOptions?: firebase.firestore.GetOptions
 
-  liveOptions: QueryListenOptions | DocumentListenOptions
+  liveOptions: firebase.firestore.QueryListenOptions | firebase.firestore.DocumentListenOptions
 
   onError: (error: any) => any
 
@@ -212,7 +203,7 @@ export interface FieryMetadata
 
   storeKey: number
 
-  store: Firestore
+  store: firebase.firestore.Firestore
 
   optionKey: string
 
@@ -272,7 +263,7 @@ export interface FieryEntry
     getChanges: FieryRecordChanges
   }
 
-  promise?: Promise<QuerySnapshot>
+  promise?: Promise<firebase.firestore.QuerySnapshot>
 
   off?: () => any
 
@@ -291,7 +282,7 @@ export interface FieryCacheEntry
 
   data: FieryData
 
-  ref: DocumentReference
+  ref: firebase.firestore.DocumentReference
 
   uses: number
 

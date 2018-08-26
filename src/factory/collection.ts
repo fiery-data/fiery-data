@@ -10,26 +10,16 @@ import { forEach } from '../util'
 
 
 
-type Query = firebase.firestore.Query
-type QuerySnapshot = firebase.firestore.QuerySnapshot
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot
-type QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot
-type DocumentChange = firebase.firestore.DocumentChange
-type CollectionReference = firebase.firestore.CollectionReference
-type QueryListenOptions = firebase.firestore.QueryListenOptions
-
-
-
-type OnSnapshot = (querySnapshot: QuerySnapshot) => any
+type OnSnapshot = (querySnapshot: firebase.firestore.QuerySnapshot) => any
 
 
 
 export function factory (entry: FieryEntry): FieryData[]
 {
-  type CollectionQuery = CollectionReference | Query
+  type CollectionQuery = firebase.firestore.CollectionReference | firebase.firestore.Query
   const options: FieryOptions = entry.options
   const query: CollectionQuery = (options.query
-    ? options.query(entry.source as CollectionReference)
+    ? options.query(entry.source as firebase.firestore.CollectionReference)
     : entry.source) as CollectionQuery
   const initial = getInitialHandler(entry)
 
@@ -47,7 +37,7 @@ export function factory (entry: FieryEntry): FieryData[]
   else
   {
     entry.off = query.onSnapshot(
-      options.liveOptions as QueryListenOptions,
+      options.liveOptions as firebase.firestore.QueryListenOptions,
       getLiveHandler(entry, initial),
       options.onError
     )
@@ -62,7 +52,7 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
   const system: FierySystem = entry.instance.system
   const initialTarget: FieryTarget | undefined = entry.target
 
-  return (querySnapshot: QuerySnapshot) =>
+  return (querySnapshot: firebase.firestore.QuerySnapshot) =>
   {
     const target: FieryData[] = entry.target as FieryData[]
     const missing: FieryMap = {}
@@ -78,7 +68,7 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
 
     system.arrayResize(target, 0)
 
-    querySnapshot.forEach((doc: DocumentSnapshot) =>
+    querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
     {
       const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
 
@@ -101,13 +91,13 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
   const options: FieryOptions = entry.options
   const system: FierySystem = entry.instance.system
 
-  return (querySnapshot: QuerySnapshot) =>
+  return (querySnapshot: firebase.firestore.QuerySnapshot) =>
   {
     const target: FieryData[] = entry.target as FieryData[]
 
-    (<any>querySnapshot).docChanges().forEach((change: DocumentChange) =>
+    (<any>querySnapshot).docChanges().forEach((change: firebase.firestore.DocumentChange) =>
     {
-      const doc: DocumentSnapshot = change.doc
+      const doc: firebase.firestore.DocumentSnapshot = change.doc
       const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
 
       switch (change.type)
@@ -146,7 +136,7 @@ function getLiveHandler (entry: FieryEntry, handleInitial: OnSnapshot): OnSnapsh
   const handleUpdate: OnSnapshot = getUpdateHandler(entry)
   let handler: OnSnapshot = handleInitial
 
-  return (querySnapshot: QuerySnapshot) =>
+  return (querySnapshot: firebase.firestore.QuerySnapshot) =>
   {
     handler(querySnapshot)
     handler = handleUpdate

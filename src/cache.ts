@@ -10,15 +10,10 @@ import { factory } from './factory'
 
 
 
-type DocumentReference = firebase.firestore.DocumentReference
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot
-
-
-
 export const globalCache: FieryCache = { }
 
 
-export function getCacheForReference (entry: FieryEntry, ref: DocumentReference): FieryCacheEntry
+export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore.DocumentReference): FieryCacheEntry
 {
   const uid = entry.storeKey + UID_SEPARATOR + ref.path
 
@@ -53,7 +48,7 @@ export function getCacheForReference (entry: FieryEntry, ref: DocumentReference)
   return cache
 }
 
-export function getCacheForDocument (entry: FieryEntry, doc: DocumentSnapshot): FieryCacheEntry
+export function getCacheForDocument (entry: FieryEntry, doc: firebase.firestore.DocumentSnapshot): FieryCacheEntry
 {
   return getCacheForReference(entry, doc.ref)
 }
@@ -142,7 +137,7 @@ export function addCacheToEntry (cache: FieryCacheEntry, entry: FieryEntry): voi
     entry.instance.cache[cache.uid] = cache
     cache.uses++
   }
-  
+
   if (!(cache.uid in entry.children))
   {
     cache.entries.push(entry)
@@ -208,7 +203,7 @@ export function addSubs (cache: FieryCacheEntry, entry: FieryEntry): void
 {
   const options: FieryOptions = entry.options
   const data: FieryData = cache.data
-  const ref: DocumentReference | undefined = cache.ref
+  const ref: firebase.firestore.DocumentReference | undefined = cache.ref
 
   if (options.sub && ref)
   {

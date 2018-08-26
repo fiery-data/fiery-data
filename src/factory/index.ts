@@ -21,10 +21,3 @@ export function factory (entry: FieryEntry): FieryTarget
 }
 
 export default factory
-
-
-// TODO when a factory is called again - take the existing target and compare it
-// to the first set of values to determine what needs to be cleared from the
-// entry cache. when the entry cache doesn't have an
-
-// if !doc.exists in colllection, clearcache

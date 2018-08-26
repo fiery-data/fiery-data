@@ -1,12 +1,4 @@
 import * as firebase from 'firebase';
-declare type Query = firebase.firestore.Query;
-declare type QuerySnapshot = firebase.firestore.QuerySnapshot;
-declare type GetOptions = firebase.firestore.GetOptions;
-declare type Firestore = firebase.firestore.Firestore;
-declare type QueryListenOptions = firebase.firestore.QueryListenOptions;
-declare type DocumentListenOptions = firebase.firestore.DocumentListenOptions;
-declare type DocumentReference = firebase.firestore.DocumentReference;
-declare type CollectionReference = firebase.firestore.CollectionReference;
 export declare type FieryData = {
     [prop: string]: any;
 };
@@ -17,7 +9,7 @@ export declare type FieryTarget = FieryData[] | FieryData | FieryMap;
 export declare type FieryExclusions = {
     [field: string]: boolean;
 };
-export declare type FierySource = Query | DocumentReference | CollectionReference;
+export declare type FierySource = firebase.firestore.Query | firebase.firestore.DocumentReference | firebase.firestore.CollectionReference;
 export declare type FierySources = {
     [name: string]: FierySource;
 };
@@ -56,7 +48,7 @@ export interface FieryOptions {
     shared: boolean;
     instance?: FieryInstance;
     key?: string;
-    query?: (source: CollectionReference) => Query;
+    query?: (source: firebase.firestore.CollectionReference) => firebase.firestore.Query;
     map?: boolean;
     doc?: boolean;
     ref?: boolean;
@@ -95,8 +87,8 @@ export interface FieryOptions {
         [subProp: string]: FieryOptionsInput;
     };
     propValue: string;
-    onceOptions?: GetOptions;
-    liveOptions: QueryListenOptions | DocumentListenOptions;
+    onceOptions?: firebase.firestore.GetOptions;
+    liveOptions: firebase.firestore.QueryListenOptions | firebase.firestore.DocumentListenOptions;
     onError: (error: any) => any;
     onSuccess: (target: FieryTarget) => any;
     onMissing: () => any;
@@ -133,7 +125,7 @@ export interface FieryMetadata {
     uid: string;
     path: string;
     storeKey: number;
-    store: Firestore;
+    store: firebase.firestore.Firestore;
     optionKey: string;
     options: FieryOptions;
 }
@@ -163,7 +155,7 @@ export interface FieryEntry {
         build: FieryRecordBuild;
         getChanges: FieryRecordChanges;
     };
-    promise?: Promise<QuerySnapshot>;
+    promise?: Promise<firebase.firestore.QuerySnapshot>;
     off?: () => any;
     id?: number;
     index?: number;
@@ -172,11 +164,10 @@ export interface FieryEntry {
 export interface FieryCacheEntry {
     uid: string;
     data: FieryData;
-    ref: DocumentReference;
+    ref: firebase.firestore.DocumentReference;
     uses: number;
     sub: FieryEntryMap;
     firstEntry: FieryEntry;
     entries: FieryEntry[];
     removed: boolean;
 }
-export {};

@@ -7,15 +7,11 @@ import { FierySource } from './types'
 
 
 
-type Firestore = firebase.firestore.Firestore
-
-
-
 export const stores = {
 
   keyNext: 0,
 
-  map: { } as { [storeKey: number]: Firestore },
+  map: { } as { [storeKey: number]: firebase.firestore.Firestore },
 
   idToKey: { } as { [id: string]: number }
 
@@ -23,7 +19,7 @@ export const stores = {
 
 export function getStoreKey (source: FierySource): number
 {
-  const firestore: Firestore = source.firestore
+  const firestore: firebase.firestore.Firestore = source.firestore
   const id: string = firestore.app.name
   let key: number = stores.idToKey[id]
 

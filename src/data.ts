@@ -8,13 +8,7 @@ import { isObject, getFields } from './util'
 
 
 
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot
-type DocumentReference = firebase.firestore.DocumentReference
-type Firestore = firebase.firestore.Firestore
-
-
-
-export function refreshData (cache: FieryCacheEntry, doc: DocumentSnapshot, entry: FieryEntry): FieryData
+export function refreshData (cache: FieryCacheEntry, doc: firebase.firestore.DocumentSnapshot, entry: FieryEntry): FieryData
 {
   const system: FierySystem = entry.instance.system
   const options: FieryOptions = entry.options
@@ -99,7 +93,7 @@ export function encodeData (data: FieryData, options: FieryOptions, fields?: Fie
   return values
 }
 
-export function parseDocument (doc: DocumentSnapshot, options: FieryOptions): FieryData
+export function parseDocument (doc: firebase.firestore.DocumentSnapshot, options: FieryOptions): FieryData
 {
   let value = doc.data()
   let out = (isObject(value) ? value : { [options.propValue]: value }) as FieryData
