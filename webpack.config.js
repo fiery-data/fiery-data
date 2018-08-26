@@ -20,6 +20,7 @@ const WEB = {
     path: path.resolve(__dirname, 'dist'),
     library: 'FieryData',
     libraryTarget: 'umd',
+    globalObject: 'this',
     umdNamedDefine: true
   },
   externals: {
