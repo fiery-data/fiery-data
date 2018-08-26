@@ -34,6 +34,7 @@ export function getInstance (systemOverrides?: Partial<FierySystem>): FieryInsta
   instance.createSub = operations.createSub
   instance.build = operations.build
   instance.buildSub = operations.buildSub
+  instance.entryFor = entryFor
   instance.destroy = destroy
   instance.free = free
   instance.linkSources = linkSources
@@ -56,11 +57,29 @@ function destroy(this: FieryInstance)
 
 function free (this: FieryInstance, target: FieryTarget)
 {
-  forEach(this.entryList, entry => {
-    if (entry.target === target) {
-      closeEntry(entry, true)
+  const entry = this.entryFor(target)
+
+  if (entry !== null)
+  {
+    closeEntry(entry, true)
+  }
+}
+
+function entryFor (this: FieryInstance, target: FieryTarget): FieryEntry | null
+{
+  const entries = this.entryList
+
+  for (let i = 0; i < entries.length; i++)
+  {
+    const entry = entries[i]
+
+    if (entry && entry.target === target)
+    {
+      return entry
     }
-  })
+  }
+
+  return null
 }
 
 function linkSources (this: FieryInstance, container: any): void

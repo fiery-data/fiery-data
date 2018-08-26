@@ -113,6 +113,7 @@ export interface FieryInstance {
     };
     entry: FieryEntryMap;
     entryList: (FieryEntry | null)[];
+    entryFor: (target: FieryTarget) => FieryEntry | null;
     cache: FieryCache;
     destroy: () => void;
     free: (target: FieryTarget) => void;

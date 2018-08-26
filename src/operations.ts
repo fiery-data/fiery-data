@@ -219,16 +219,11 @@ export function build <T extends FieryData>(this: FieryInstance, target: string 
   }
   else
   {
-    const entries = this.entryList
+    const entry = this.entryFor(target)
 
-    for (let i = 0; i < entries.length; i++)
+    if (entry)
     {
-      const entry = entries[i]
-
-      if (entry && entry.target === target)
-      {
-        return buildFromCollection (entry.source as CollectionReference, entry, initial)
-      }
+      return buildFromCollection (entry.source as CollectionReference, entry, initial)
     }
   }
 

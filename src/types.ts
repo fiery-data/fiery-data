@@ -170,6 +170,8 @@ export interface FieryInstance
 
   entryList: (FieryEntry | null)[]
 
+  entryFor: (target: FieryTarget) => FieryEntry | null
+
   cache: FieryCache
 
   destroy: () => void
