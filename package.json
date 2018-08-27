@@ -1,6 +1,6 @@
 {
     "name": "fiery-data",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "author": "Philip Diffenderfer",
     "description": "A Typescript/JS library for interacting with Google Firebase Database and Firestore",
     "license": "MIT",
@@ -20,7 +20,7 @@
         "realtime"
     ],
     "dependencies": {
-        "firebase": "^4.x.x"
+        "firebase": "^5.x.x"
     },
     "devDependencies": {
         "@types/chai": "^4.1.4",

@@ -9,7 +9,7 @@ export declare type FieryTarget = FieryData[] | FieryData | FieryMap;
 export declare type FieryExclusions = {
     [field: string]: boolean;
 };
-export declare type FierySource = firebase.firestore.Query | firebase.firestore.DocumentReference | firebase.firestore.CollectionReference;
+export declare type FierySource = firebase.firestore.Query | firebase.firestore.DocumentReference;
 export declare type FierySources = {
     [name: string]: FierySource;
 };
@@ -88,7 +88,7 @@ export interface FieryOptions {
     };
     propValue: string;
     onceOptions?: firebase.firestore.GetOptions;
-    liveOptions: firebase.firestore.QueryListenOptions | firebase.firestore.DocumentListenOptions;
+    liveOptions: firebase.firestore.SnapshotListenOptions;
     onError: (error: any) => any;
     onSuccess: (target: FieryTarget) => any;
     onMissing: () => any;

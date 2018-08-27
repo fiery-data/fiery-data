@@ -37,7 +37,7 @@ export function factory (entry: FieryEntry): FieryData[]
   else
   {
     entry.off = query.onSnapshot(
-      options.liveOptions as firebase.firestore.QueryListenOptions,
+      options.liveOptions,
       getLiveHandler(entry, initial),
       options.onError
     )

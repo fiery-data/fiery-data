@@ -40,7 +40,7 @@ export function factory (entry: FieryEntry): FieryData
   else
   {
     entry.off = source.onSnapshot(
-      options.liveOptions as firebase.firestore.DocumentListenOptions,
+      options.liveOptions,
       onSnapshot,
       options.onError
     )

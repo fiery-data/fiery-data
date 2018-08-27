@@ -11,10 +11,7 @@ export type FieryTarget = FieryData[] | FieryData | FieryMap
 
 export type FieryExclusions = { [field: string]: boolean }
 
-export type FierySource =
-  firebase.firestore.Query |
-  firebase.firestore.DocumentReference |
-  firebase.firestore.CollectionReference
+export type FierySource = firebase.firestore.Query | firebase.firestore.DocumentReference
 
 export type FierySources = { [name: string]: FierySource }
 
@@ -128,7 +125,7 @@ export interface FieryOptions
 
   onceOptions?: firebase.firestore.GetOptions
 
-  liveOptions: firebase.firestore.QueryListenOptions | firebase.firestore.DocumentListenOptions
+  liveOptions: firebase.firestore.SnapshotListenOptions
 
   onError: (error: any) => any
 
