@@ -137,6 +137,11 @@ export declare type FieryRecordClear = (props: FieryFields) => Promise<void[]>;
 export declare type FieryRecordCreate = <T extends FieryData>(sub: string, initial?: FieryData) => T;
 export declare type FieryRecordBuild = <T extends FieryData>(sub: string, initial?: FieryData) => T;
 export declare type FieryRecordChanges = (fieldsOrEquality: FieryFields | FieryEquality, equalityOrNothing?: FieryEquality) => Promise<FieryChanges>;
+export declare type FieryRecordProperties = {
+    [prop: string]: {
+        value: any;
+    };
+};
 export interface FieryEntry {
     name?: string;
     options: FieryOptions;
@@ -155,6 +160,7 @@ export interface FieryEntry {
         build: FieryRecordBuild;
         getChanges: FieryRecordChanges;
     };
+    recordProperties: FieryRecordProperties;
     promise?: Promise<firebase.firestore.QuerySnapshot>;
     off?: () => any;
     id?: number;

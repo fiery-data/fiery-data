@@ -1,6 +1,6 @@
 
 
-import { FierySystem, FieryOptionsInput, FieryEntryMap, FieryOptions, FieryInstance, FieryEntry, FierySources, FierySource, FieryCache, FieryData, FieryChanges, FieryEquality, FieryFields } from './types'
+import { FierySystem, FieryOptionsInput, FieryEntryMap, FieryOptions, FieryInstance, FieryEntry, FierySources, FierySource, FieryCache, FieryData, FieryChanges, FieryEquality, FieryFields, FieryRecordProperties } from './types'
 import { isCollectionSource, forEach, isDefined } from './util'
 import { getOptions, recycleOptions } from './options'
 import { getStoreKey } from './store'
@@ -72,6 +72,7 @@ export function getEntry (instance: FieryInstance, source: FierySource, optionsI
   }
 
   const recordFunctions = getEntryRecordFunctions(instance)
+  const recordProperties = getEntryRecordProperties(options, recordFunctions)
   const children: FieryCache = {}
   const live: boolean = true
   const entry: FieryEntry = {
@@ -82,6 +83,7 @@ export function getEntry (instance: FieryInstance, source: FierySource, optionsI
     storeKey,
     children,
     recordFunctions,
+    recordProperties,
     live
   }
 
@@ -135,4 +137,20 @@ export function getEntryRecordFunctions (instance: FieryInstance)
       return operations.getChanges.call(instance, this, fieldsOrEquality, equalityOrNothing)
     }
   }
+}
+
+export function getEntryRecordProperties (options: FieryOptions, recordFunctions: any): FieryRecordProperties
+{
+  const props: FieryRecordProperties = {}
+
+  for (var prop in options.recordOptions)
+  {
+    const newProp = options.recordOptions[prop]
+
+    props[newProp] = {
+      value: recordFunctions[prop]
+    }
+  }
+
+  return props
 }

@@ -224,6 +224,11 @@ export type FieryRecordBuild = <T extends FieryData>(sub: string, initial?: Fier
 
 export type FieryRecordChanges = (fieldsOrEquality: FieryFields | FieryEquality, equalityOrNothing?: FieryEquality) => Promise<FieryChanges>
 
+export type FieryRecordProperties =
+{
+  [prop: string]: { value: any }
+}
+
 export interface FieryEntry
 {
 
@@ -259,6 +264,8 @@ export interface FieryEntry
 
     getChanges: FieryRecordChanges
   }
+
+  recordProperties: FieryRecordProperties
 
   promise?: Promise<firebase.firestore.QuerySnapshot>
 

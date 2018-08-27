@@ -1,4 +1,4 @@
-import { FieryOptionsInput, FieryInstance, FieryEntry, FierySource, FieryData, FieryChanges, FieryEquality, FieryFields } from './types';
+import { FieryOptionsInput, FieryOptions, FieryInstance, FieryEntry, FierySource, FieryData, FieryChanges, FieryEquality, FieryFields, FieryRecordProperties } from './types';
 export declare function closeEntry(entry: FieryEntry | null, remove?: boolean): void;
 export declare function getEntry(instance: FieryInstance, source: FierySource, optionsInput?: FieryOptionsInput, name?: string, namedSource?: boolean): FieryEntry;
 export declare function getEntryRecordFunctions(instance: FieryInstance): {
@@ -11,3 +11,4 @@ export declare function getEntryRecordFunctions(instance: FieryInstance): {
     create: <T extends FieryData>(this: FieryData, sub: string, initial?: FieryData | undefined) => T;
     getChanges: (this: FieryData, fieldsOrEquality: string | string[] | FieryEquality, equalityOrNothing?: FieryEquality | undefined) => Promise<FieryChanges>;
 };
+export declare function getEntryRecordProperties(options: FieryOptions, recordFunctions: any): FieryRecordProperties;
