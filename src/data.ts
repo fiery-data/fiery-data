@@ -18,6 +18,16 @@ export function refreshData (cache: FieryCacheEntry, doc: firebase.firestore.Doc
 
   copyData(system, data, decoded)
 
+  if (options.propExists)
+  {
+    system.setProperty(data, options.propExists, doc.exists)
+  }
+
+  if (options.propParent && entry.parent)
+  {
+    system.setProperty(data, options.propParent, entry.parent.data)
+  }
+
   return data;
 }
 

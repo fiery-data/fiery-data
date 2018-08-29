@@ -111,6 +111,9 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
           if (doc.exists) {
             removeCacheFromEntry(entry, cache)
           } else {
+            if (options.propExists) {
+              system.setProperty(cache.data, options.propExists, false)
+            }
             destroyCache(cache)
           }
           break

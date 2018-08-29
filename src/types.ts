@@ -123,6 +123,10 @@ export interface FieryOptions
 
   propValue: string
 
+  propExists?: string
+
+  propParent?: string
+
   onceOptions?: firebase.firestore.GetOptions
 
   liveOptions: firebase.firestore.SnapshotListenOptions
@@ -244,6 +248,8 @@ export interface FieryEntry
 
   target?: FieryTarget
 
+  parent?: FieryCacheEntry
+
   children: FieryCache
 
   recordFunctions:
@@ -273,7 +279,7 @@ export interface FieryEntry
 
   id?: number
 
-  index?: number,
+  index?: number
 
   live: boolean
 

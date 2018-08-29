@@ -226,8 +226,10 @@ export function addSubs (cache: FieryCacheEntry, entry: FieryEntry): void
           false // we shouldn't add this to sources
         )
 
-        data[subProp] = factory(subEntry)
+        subEntry.parent = cache
         cache.sub[subProp] = subEntry
+
+        data[subProp] = factory(subEntry)
       }
     }
   }

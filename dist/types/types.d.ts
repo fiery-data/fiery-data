@@ -87,6 +87,8 @@ export interface FieryOptions {
         [subProp: string]: FieryOptionsInput;
     };
     propValue: string;
+    propExists?: string;
+    propParent?: string;
     onceOptions?: firebase.firestore.GetOptions;
     liveOptions: firebase.firestore.SnapshotListenOptions;
     onError: (error: any) => any;
@@ -149,6 +151,7 @@ export interface FieryEntry {
     instance: FieryInstance;
     storeKey: number;
     target?: FieryTarget;
+    parent?: FieryCacheEntry;
     children: FieryCache;
     recordFunctions: {
         sync: FieryRecordSync;

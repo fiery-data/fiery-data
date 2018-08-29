@@ -56,6 +56,11 @@ export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry,
 
   if (!doc.exists)
   {
+    if (options.propExists)
+    {
+      system.setProperty(cache.data, options.propExists, false)
+    }
+
     destroyCache(cache)
 
     if (entry.name)

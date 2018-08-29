@@ -65,4 +65,57 @@ describe('options', function()
     $fiery.destroy()
   })
 
+  it('propExists', function() {
+
+    const fs = getStore('options propExists', {
+      'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null }
+    })
+
+    const $fiery = $getFiery()
+
+    const task1: any = $fiery(fs.doc('tasks/1'), {
+      propExists: 'exists'
+    })
+
+    expect(task1.exists).to.be.true
+
+    $fiery.remove(task1)
+
+    expect(task1.exists).to.be.false
+
+    const task2: any = $fiery(fs.doc('tasks/2'), {
+      propExists: 'exists'
+    })
+
+    expect(task2.exists).to.be.false
+
+    $fiery.destroy()
+  })
+
+  it('propParent', function() {
+
+    const fs = getStore('options propParent', {
+      'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null },
+      'tasks/1/assigned/1': {name: 'A1'},
+      'tasks/1/assigned/2': {name: 'A1'}
+    })
+
+    const $fiery = $getFiery()
+
+    const task1: any = $fiery(fs.doc('tasks/1'), {
+      sub: {
+        assigned: {
+          propParent: 'parent'
+        }
+      }
+    })
+
+    expect(task1.assigned).to.be.ok
+    expect(task1.assigned.length).to.equal(2)
+    expect(task1.assigned[0].parent).to.equal(task1)
+    expect(task1.assigned[1].parent).to.equal(task1)
+
+    $fiery.destroy()
+  })
+
 })
