@@ -19,9 +19,13 @@ export function factory (entry: FieryEntry): FieryData
   const cache: FieryCacheEntry = getCacheForReference(entry, source)
   const initialTarget: FieryTarget | undefined = entry.target
 
+  let missingSynchronously = false
+
   const onSnapshot = (doc: firebase.firestore.DocumentSnapshot) =>
   {
     handleDocumentUpdate(cache, entry, doc)
+
+    missingSynchronously = !doc.exists
   }
 
   if (initialTarget && initialTarget !== cache.data)
@@ -46,6 +50,11 @@ export function factory (entry: FieryEntry): FieryData
     )
   }
 
+  if (missingSynchronously && options.nullifyMissing)
+  {
+    return (<any>null) as FieryData
+  }
+
   return entry.target as FieryData
 }
 
@@ -61,11 +70,14 @@ export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry,
       system.setProperty(cache.data, options.propExists, false)
     }
 
-    destroyCache(cache)
-
-    if (entry.name)
+    if (options.nullifyMissing)
     {
-      system.removeNamed(entry.name)
+      destroyCache(cache)
+
+      if (entry.name)
+      {
+        system.removeNamed(entry.name)
+      }
     }
   }
   else

@@ -118,4 +118,63 @@ describe('options', function()
     $fiery.destroy()
   })
 
+  it('nullifyMissing true', function() {
+
+    const fs = getStore('options nullifyMissing true', {
+      'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null }
+    })
+
+    const context: any = {}
+
+    const $fiery = $getFiery({
+      removeNamed(name: string) {
+        context[name] = null
+      }
+    })
+
+    const options = {
+      nullifyMissing: true,
+      propExists: 'exists'
+    }
+
+    const task = context.task = $fiery(fs.doc('tasks/2'), options, 'task')
+
+    expect(context.task).to.be.null
+
+    $fiery.destroy()
+  })
+
+  it('nullifyMissing false', function() {
+
+    const fs = getStore('options nullifyMissing false', {
+      'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null }
+    })
+
+    const context: any = {}
+
+    const $fiery = $getFiery({
+      removeNamed(name: string) {
+        context[name] = null
+      }
+    })
+
+    const options = {
+      nullifyMissing: false,
+      propExists: 'exists'
+    }
+
+    context.task = $fiery(fs.doc('tasks/2'), options, 'task')
+
+    expect(context.task).to.be.ok
+    expect(context.task.exists).to.be.false
+
+    context.task.name = 'T2'
+
+    $fiery.sync(context.task)
+
+    expect(context.task.exists).to.be.true
+
+    $fiery.destroy()
+  })
+
 })

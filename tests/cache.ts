@@ -22,6 +22,7 @@ describe('cache', function()
     define({
       post: {
         include: ['title', 'tags', 'content', 'author_id', 'created_at'],
+        nullifyMissing: true,
         defaults: {
           title: '',
           content: '',

@@ -72,6 +72,8 @@ export interface FieryOptions
 
   once?: boolean
 
+  nullifyMissing?: boolean
+
   type?: { new (): FieryData }
 
   newDocument: (encoded?: FieryData) => FieryData

@@ -53,6 +53,7 @@ export interface FieryOptions {
     doc?: boolean;
     ref?: boolean;
     once?: boolean;
+    nullifyMissing?: boolean;
     type?: {
         new (): FieryData;
     };
