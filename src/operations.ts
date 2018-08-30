@@ -7,6 +7,7 @@ import { FieryInstance, FieryCacheEntry, FieryOptions, FieryEntry, FieryData, Fi
 import { parseDocument, encodeData } from './data'
 import { forEach, isEqual, isDefined, isFunction, isString, getFields } from './util'
 import { getCacheForData, getCacheForReference } from './cache'
+import { stats } from './stats'
 
 
 
@@ -20,7 +21,20 @@ export function update (this: FieryInstance, data: FieryData, fields?: FieryFiel
     const options: FieryOptions = cache.firstEntry.options
     const values: FieryData = encodeData(data, options, fields)
 
-    return cache.ref.update(values)
+    stats.writes++
+
+    if (cache.exists)
+    {
+      stats.updates++
+
+      return cache.ref.update(values)
+    }
+    else
+    {
+      stats.sets++
+
+      return cache.ref.set(values)
+    }
   }
 
   return Promise.reject('The given data is out of scope and cannot be operated on.')
@@ -34,6 +48,9 @@ export function sync (this: FieryInstance, data: FieryData, fields?: FieryFields
   {
     const options: FieryOptions = cache.firstEntry.options
     const values: FieryData = encodeData(data, options, fields)
+
+    stats.sets++
+    stats.writes++
 
     return cache.ref.set(values)
   }
@@ -59,6 +76,8 @@ export function remove (this: FieryInstance, data: FieryData, excludeSubs: bool
         })
       }
     }
+
+    stats.deletes++
 
     return cache.ref.delete()
   }
@@ -104,6 +123,9 @@ export function clear (this: FieryInstance, data: FieryData, props: FieryFields)
 
     if (deleteCount > 0)
     {
+      stats.updates++
+      stats.writes++
+
       promises.push(ref.update(deleting))
     }
 
@@ -126,6 +148,8 @@ export function getChanges (this: FieryInstance,
     const equality: FieryEquality = ((fields ? equalityOrNothing : fieldsOrEquality) || isEqual) as FieryEquality
     const options: FieryOptions = cache.firstEntry.options
     const current: FieryData = encodeData(data, options, fields)
+
+    stats.reads++
 
     const getter: Promise<firebase.firestore.DocumentSnapshot> = cache.ref.get()
 

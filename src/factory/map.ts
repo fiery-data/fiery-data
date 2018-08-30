@@ -8,6 +8,7 @@ import { FierySystem, FieryEntry, FieryTarget, FieryData, FieryOptions, FieryMap
 import { forEach } from '../util'
 import { refreshData } from '../data'
 import { getCacheForDocument, removeDataFromEntry, removeCacheFromEntry, destroyCache } from '../cache'
+import { stats } from '../stats'
 
 
 
@@ -28,6 +29,8 @@ function factory (entry: FieryEntry): FieryMap
   {
     entry.target = options.newCollection()
   }
+
+  stats.queries++
 
   if (options.once)
   {
@@ -104,6 +107,7 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
             if (options.propExists) {
               system.setProperty(cache.data, options.propExists, false)
             }
+            cache.exists = false
             destroyCache(cache)
           }
           break

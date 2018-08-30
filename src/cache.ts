@@ -7,6 +7,7 @@ import { UID_SEPARATOR, PROP_UID, PATH_SEPARATOR, ENTRY_SEPARATOR } from './cons
 import { FieryInstance, FieryEntry, FierySource, FieryCacheEntry, FieryCache, FieryData, FieryOptions, FieryOptionsMap, FieryEntryMap } from './types'
 import { closeEntry, getEntry } from './entry'
 import { factory } from './factory'
+import { stats } from './stats'
 
 
 
@@ -32,6 +33,7 @@ export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore
     uid,
     data,
     ref,
+    exists: false,
     uses: 0,
     sub: {},
     firstEntry: entry,
@@ -49,6 +51,8 @@ export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore
 
 export function getCacheForDocument (entry: FieryEntry, doc: firebase.firestore.DocumentSnapshot, checkSubs: boolean = false): FieryCacheEntry
 {
+  stats.reads++
+
   return getCacheForReference(entry, doc.ref, checkSubs)
 }
 

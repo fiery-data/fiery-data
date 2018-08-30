@@ -5,7 +5,7 @@ import * as firebase from 'firebase'
 import { FierySystem, FieryOptions, FieryEntry, FieryData, FieryCacheEntry, FieryTarget } from '../types'
 import { refreshData } from '../data'
 import { getCacheForReference, removeDataFromEntry, destroyCache } from '../cache'
-
+import { stats } from '../stats'
 
 
 type OnSnapshot = (querySnapshot: firebase.firestore.DocumentSnapshot) => any
@@ -34,6 +34,8 @@ export function factory (entry: FieryEntry): FieryData
   }
 
   entry.target = cache.data
+
+  stats.queries++
 
   if (options.once)
   {
@@ -69,6 +71,8 @@ export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry,
     {
       system.setProperty(cache.data, options.propExists, false)
     }
+    
+    cache.exists = false
 
     if (options.nullifyMissing)
     {

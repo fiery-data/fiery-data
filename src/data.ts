@@ -28,6 +28,8 @@ export function refreshData (cache: FieryCacheEntry, doc: firebase.firestore.Doc
     system.setProperty(data, options.propParent, entry.parent.data)
   }
 
+  cache.exists = doc.exists
+
   return data;
 }
 

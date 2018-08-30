@@ -173,6 +173,7 @@ export interface FieryEntry {
 }
 export interface FieryCacheEntry {
     uid: string;
+    exists: boolean;
     data: FieryData;
     ref: firebase.firestore.DocumentReference;
     uses: number;
