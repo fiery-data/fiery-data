@@ -59,7 +59,7 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
 
     querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
     {
-      const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
+      const cache: FieryCacheEntry = getCacheForDocument(entry, doc, true)
 
       refreshData(cache, doc, entry)
 

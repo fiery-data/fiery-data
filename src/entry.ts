@@ -68,6 +68,11 @@ export function getEntry (instance: FieryInstance, source: FierySource, optionsI
     existing.storeKey = storeKey
     existing.live = true
 
+    if (name && namedSource)
+    {
+      instance.sources[ name ] = source
+    }
+
     return existing
   }
 

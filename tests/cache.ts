@@ -261,4 +261,69 @@ describe('cache', function()
     $fiery2.destroy()
   })
 
+  it('loads sub on cached different instance', function()
+  {
+    const fs = getStore('cache loads sub on cached different instance', {
+      'posts/1': { title: 'T1', tags: [1, 2], content: 'C1', created_at: new Date(3), author_id: '1' },
+      'posts/1/comments/1': { title: 'C1' },
+      'posts/1/comments/2': { title: 'C2' }
+    })
+
+    const $fiery1 = $getFiery()
+    const $fiery2 = $getFiery()
+
+    const optionsA = {}
+    const optionsB = {
+      sub: {
+        comments: {}
+      }
+    }
+
+    const post1A: any = $fiery1(fs.doc('posts/1'), optionsA, 'post')
+
+    expect(post1A.comments).to.be.undefined
+
+    post1A.comments = []
+
+    const post1B = $fiery2(fs.doc('posts/1'), optionsB, 'post')
+
+    expect(post1A).to.equal(post1B)
+    expect(post1A.comments).to.be.ok
+    expect(post1A.comments.length).to.equal(2)
+    expect(post1A.comments[0].title).to.equal('C1')
+    expect(post1A.comments[1].title).to.equal('C2')
+  })
+
+  it('loads sub on cached same instance', function()
+  {
+    const fs = getStore('cache loads sub on cached same instance', {
+      'posts/1': { title: 'T1', tags: [1, 2], content: 'C1', created_at: new Date(3), author_id: '1' },
+      'posts/1/comments/1': { title: 'C1' },
+      'posts/1/comments/2': { title: 'C2' }
+    })
+
+    const $fiery1 = $getFiery()
+
+    const optionsA = {}
+    const optionsB = {
+      sub: {
+        comments: {}
+      }
+    }
+
+    const post1A: any = $fiery1(fs.doc('posts/1'), optionsA, 'post')
+
+    expect(post1A.comments).to.be.undefined
+
+    post1A.comments = []
+
+    const post1B = $fiery1(fs.doc('posts/1'), optionsB, 'post')
+
+    expect(post1A).to.equal(post1B)
+    expect(post1A.comments).to.be.ok
+    expect(post1A.comments.length).to.equal(2)
+    expect(post1A.comments[0].title).to.equal('C1')
+    expect(post1A.comments[1].title).to.equal('C2')
+  })
+
 })

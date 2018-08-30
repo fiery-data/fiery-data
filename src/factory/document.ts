@@ -16,7 +16,7 @@ export function factory (entry: FieryEntry): FieryData
 {
   const source: firebase.firestore.DocumentReference = entry.source as firebase.firestore.DocumentReference
   const options: FieryOptions = entry.options
-  const cache: FieryCacheEntry = getCacheForReference(entry, source)
+  const cache: FieryCacheEntry = getCacheForReference(entry, source, true)
   const initialTarget: FieryTarget | undefined = entry.target
 
   let missingSynchronously = false

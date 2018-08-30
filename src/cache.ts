@@ -13,13 +13,13 @@ import { factory } from './factory'
 export const globalCache: FieryCache = { }
 
 
-export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore.DocumentReference): FieryCacheEntry
+export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore.DocumentReference, checkSubs: boolean = false): FieryCacheEntry
 {
   const uid = entry.storeKey + UID_SEPARATOR + ref.path
 
   if (uid in globalCache)
   {
-    addCacheToEntry(globalCache[uid], entry)
+    addCacheToEntry(globalCache[uid], entry, checkSubs)
 
     return globalCache[uid]
   }
@@ -41,16 +41,15 @@ export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore
 
   globalCache[uid] = cache
 
-  addCacheToEntry(cache, entry)
+  addCacheToEntry(cache, entry, true)
   createRecord(data, entry)
-  addSubs(cache, entry)
 
   return cache
 }
 
-export function getCacheForDocument (entry: FieryEntry, doc: firebase.firestore.DocumentSnapshot): FieryCacheEntry
+export function getCacheForDocument (entry: FieryEntry, doc: firebase.firestore.DocumentSnapshot, checkSubs: boolean = false): FieryCacheEntry
 {
-  return getCacheForReference(entry, doc.ref)
+  return getCacheForReference(entry, doc.ref, checkSubs)
 }
 
 export function getCacheForData (data: FieryData): FieryCacheEntry | undefined
@@ -130,7 +129,7 @@ export function isReferencedSub (cache: FieryCacheEntry, sub: string): boolean
   return false
 }
 
-export function addCacheToEntry (cache: FieryCacheEntry, entry: FieryEntry): void
+export function addCacheToEntry (cache: FieryCacheEntry, entry: FieryEntry, checkSubs: boolean = false): void
 {
   if (!(cache.uid in entry.instance.cache))
   {
@@ -143,6 +142,10 @@ export function addCacheToEntry (cache: FieryCacheEntry, entry: FieryEntry): voi
     cache.entries.push(entry)
     entry.children[cache.uid] = cache
 
+    addSubs(cache, entry)
+  }
+  else if (checkSubs)
+  {
     addSubs(cache, entry)
   }
 }
