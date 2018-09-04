@@ -6,6 +6,7 @@ export declare const PATH_SEPARATOR = "/";
 export declare const RECORD_OPTIONS: {
     sync: string;
     update: string;
+    save: string;
     remove: string;
     ref: string;
     clear: string;

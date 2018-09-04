@@ -73,6 +73,7 @@ export interface FieryOptions {
     recordOptions: {
         sync?: string;
         update?: string;
+        save?: string;
         remove?: string;
         ref?: string;
         clear?: string;
@@ -114,6 +115,7 @@ export interface FieryInstance {
     free: (target: FieryTarget) => void;
     linkSources: (container: any) => void;
     update: (data: FieryData, fields?: FieryFields) => Promise<void>;
+    save: (data: FieryData, fields?: FieryFields) => Promise<void>;
     sync: (data: FieryData, fields?: FieryFields) => Promise<void>;
     remove: (data: FieryData) => Promise<void>;
     clear: (data: FieryData, props: FieryFields) => Promise<void[]>;

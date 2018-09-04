@@ -121,6 +121,9 @@ export function getEntryRecordFunctions (instance: FieryInstance)
     update: function(this: FieryData, fields?: FieryFields): Promise<void> {
       return operations.update.call(instance, this, fields)
     },
+    save: function(this: FieryData, fields?: FieryFields): Promise<void> {
+      return operations.save.call(instance, this, fields)
+    },
     remove: function(this: FieryData, excludeSubs: boolean = false): Promise<void> {
       return operations.remove.call(instance, this, excludeSubs)
     },

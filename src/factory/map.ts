@@ -9,6 +9,7 @@ import { forEach } from '../util'
 import { refreshData } from '../data'
 import { getCacheForDocument, removeDataFromEntry, removeCacheFromEntry, destroyCache } from '../cache'
 import { stats } from '../stats'
+import { callbacks } from '../callbacks'
 
 
 
@@ -70,12 +71,22 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
 
       delete missing[doc.id]
 
+      callbacks.onCollectionAdd(cache.data, target, entry)
+
     }, options.onError)
 
     forEach(missing, (missed, key) => system.removeProperty(target, key as string))
-    forEach(missing, missed => removeDataFromEntry(entry, missed))
+
+    forEach(missing, data =>
+    {
+      callbacks.onCollectionRemove(data, target, entry)
+
+      removeDataFromEntry(entry, data)
+    })
 
     options.onSuccess(target)
+
+    callbacks.onCollectionChanged(target, entry)
   }
 }
 
@@ -93,20 +104,38 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
       const doc: firebase.firestore.DocumentSnapshot = change.doc
       const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
 
-      switch (change.type) {
+      switch (change.type)
+      {
         case 'modified':
-        case 'added':
-          const data: FieryData = refreshData(cache, doc, entry)
-          system.setProperty(target, doc.id, data)
+          const updated: FieryData = refreshData(cache, doc, entry)
+          system.setProperty(target, doc.id, updated)
+
+          callbacks.onCollectionModify(updated, target, entry)
           break
+
+        case 'added':
+          const created: FieryData = refreshData(cache, doc, entry)
+          system.setProperty(target, doc.id, created)
+
+          callbacks.onCollectionAdd(created, target, entry)
+          break
+
         case 'removed':
+          callbacks.onCollectionRemove(cache.data, target, entry)
+
           system.removeProperty(target, doc.id)
-          if (doc.exists) {
+
+          if (doc.exists)
+          {
             removeCacheFromEntry(entry, cache)
-          } else {
-            if (options.propExists) {
+          }
+          else
+          {
+            if (options.propExists)
+            {
               system.setProperty(cache.data, options.propExists, false)
             }
+
             cache.exists = false
             destroyCache(cache)
           }
@@ -115,6 +144,8 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
     }, options.onError)
 
     options.onSuccess(target)
+
+    callbacks.onCollectionChanged(target, entry)
   }
 }
 

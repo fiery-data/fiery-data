@@ -4,6 +4,7 @@ export declare function getEntry(instance: FieryInstance, source: FierySource, o
 export declare function getEntryRecordFunctions(instance: FieryInstance): {
     sync: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
     update: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
+    save: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
     remove: (this: FieryData, excludeSubs?: boolean) => Promise<void>;
     ref: (this: FieryData, sub?: string | undefined) => FierySource;
     clear: (this: FieryData, props: FieryFields) => Promise<void[]>;

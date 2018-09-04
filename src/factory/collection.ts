@@ -8,6 +8,7 @@ import { refreshData } from '../data'
 import { getCacheForDocument, removeCacheFromEntry, removeDataFromEntry, destroyCache } from '../cache'
 import { forEach } from '../util'
 import { stats } from '../stats'
+import { callbacks } from '../callbacks'
 
 
 
@@ -81,11 +82,20 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
 
       delete missing[cache.uid]
 
+      callbacks.onCollectionAdd(cache.data, target, entry)
+
     }, options.onError)
 
-    forEach(missing, value => removeDataFromEntry(entry, value))
+    forEach(missing, data =>
+    {
+      callbacks.onCollectionRemove(data, target, entry)
+
+      removeDataFromEntry(entry, data)
+    })
 
     options.onSuccess(target)
+
+    callbacks.onCollectionChanged(target, entry)
   }
 }
 
@@ -108,15 +118,24 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
         case 'added':
           const created: FieryData = refreshData(cache, doc, entry)
           system.arraySet(target, change.newIndex, created)
+
+          callbacks.onCollectionAdd(created, target, entry)
           break
 
         case 'removed':
-          if (doc.exists) {
+          callbacks.onCollectionRemove(cache.data, target, entry)
+
+          if (doc.exists)
+          {
             removeCacheFromEntry(entry, cache)
-          } else {
-            if (options.propExists) {
+          }
+          else
+          {
+            if (options.propExists)
+            {
               system.setProperty(cache.data, options.propExists, false)
             }
+
             cache.exists = false
             destroyCache(cache)
           }
@@ -125,9 +144,12 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
         case 'modified':
           const updated: FieryData = refreshData(cache, doc, entry)
 
-          if (change.oldIndex !== change.newIndex) {
+          if (change.oldIndex !== change.newIndex)
+          {
             system.arraySet(target, change.newIndex, updated)
           }
+
+          callbacks.onCollectionModify(updated, target, entry)
           break
       }
     }, options.onError)
@@ -135,6 +157,8 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
     system.arrayResize(target, querySnapshot.size)
 
     options.onSuccess(target)
+
+    callbacks.onCollectionChanged(target, entry)
   }
 }
 

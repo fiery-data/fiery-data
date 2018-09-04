@@ -8,6 +8,7 @@ import { FieryInstance, FieryEntry, FierySource, FieryCacheEntry, FieryCache, Fi
 import { closeEntry, getEntry } from './entry'
 import { factory } from './factory'
 import { stats } from './stats'
+import { callbacks } from './callbacks'
 
 
 
@@ -45,6 +46,8 @@ export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore
 
   addCacheToEntry(cache, entry, true)
   createRecord(data, entry)
+
+  callbacks.onCacheCreate(cache)
 
   return cache
 }
@@ -107,6 +110,8 @@ export function removeCacheFromEntry (entry: FieryEntry, cache?: FieryCacheEntry
       {
         if (!isReferencedSub(cache, sub))
         {
+          callbacks.onSubDestroy(cache.data, sub, cache)
+
           closeEntry(cache.sub[sub], true)
         }
       }
@@ -196,6 +201,8 @@ export function destroyCache (cache: FieryCacheEntry): void
 
   if (cache.uses <= 0 && !cache.removed)
   {
+    callbacks.onCacheDestroy(cache)
+
     delete globalCache[cache.uid]
     delete cache.ref
     delete cache.sub
@@ -237,6 +244,8 @@ export function addSubs (cache: FieryCacheEntry, entry: FieryEntry): void
         cache.sub[subProp] = subEntry
 
         data[subProp] = factory(subEntry)
+
+        callbacks.onSubCreate(data, subProp, cache)
       }
     }
   }

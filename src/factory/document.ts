@@ -6,6 +6,8 @@ import { FierySystem, FieryOptions, FieryEntry, FieryData, FieryCacheEntry, Fier
 import { refreshData } from '../data'
 import { getCacheForReference, removeDataFromEntry, destroyCache } from '../cache'
 import { stats } from '../stats'
+import { callbacks } from '../callbacks'
+
 
 
 type OnSnapshot = (querySnapshot: firebase.firestore.DocumentSnapshot) => any
@@ -67,11 +69,13 @@ export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry,
 
   if (!doc.exists)
   {
+    callbacks.onDocumentMissing(cache.data, entry)
+
     if (options.propExists)
     {
       system.setProperty(cache.data, options.propExists, false)
     }
-    
+
     cache.exists = false
 
     if (options.nullifyMissing)
@@ -89,6 +93,8 @@ export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry,
     refreshData(cache, doc, entry)
 
     options.onSuccess(cache.data)
+
+    callbacks.onDocumentUpdate(cache.data, entry)
   }
 }
 

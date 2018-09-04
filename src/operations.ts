@@ -8,13 +8,64 @@ import { parseDocument, encodeData } from './data'
 import { forEach, isEqual, isDefined, isFunction, isString, getFields } from './util'
 import { getCacheForData, getCacheForReference } from './cache'
 import { stats } from './stats'
+import { callbacks } from './callbacks'
 
 
+
+export function save (this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>
+{
+  const cache: FieryCacheEntry | undefined = getCacheForData(data)
+
+  if (cache && cache.ref)
+  {
+    const options: FieryOptions = cache.firstEntry.options
+    const values: FieryData = encodeData(data, options, fields)
+
+    if (cache.exists)
+    {
+      stats.writes++
+      stats.updates++
+
+      callbacks.onUpdate(data, values, cache)
+
+      return cache.ref.update(values)
+    }
+    else
+    {
+      return cache.ref.get().then(doc =>
+      {
+        stats.writes++
+
+        if (doc.exists)
+        {
+          stats.updates++
+
+          callbacks.onUpdate(data, values, cache)
+
+          return cache.ref.update(values)
+        }
+        else
+        {
+          const createValues = encodeData(data, options)
+
+          stats.sets++
+
+          callbacks.onSet(data, createValues, cache)
+
+          return cache.ref.set(createValues)
+        }
+      })
+    }
+  }
+
+  callbacks.onInvalidOperation(data, 'save')
+
+  return Promise.reject('The given data is out of scope and cannot be operated on.')
+}
 
 export function update (this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>
 {
   const cache: FieryCacheEntry | undefined = getCacheForData(data)
-  const result = Promise.resolve(false)
 
   if (cache && cache.ref)
   {
@@ -22,20 +73,14 @@ export function update (this: FieryInstance, data: FieryData, fields?: FieryFiel
     const values: FieryData = encodeData(data, options, fields)
 
     stats.writes++
+    stats.updates++
 
-    if (cache.exists)
-    {
-      stats.updates++
+    callbacks.onUpdate(data, values, cache)
 
-      return cache.ref.update(values)
-    }
-    else
-    {
-      stats.sets++
-
-      return cache.ref.set(values)
-    }
+    return cache.ref.update(values)
   }
+
+  callbacks.onInvalidOperation(data, 'update')
 
   return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
@@ -52,8 +97,12 @@ export function sync (this: FieryInstance, data: FieryData, fields?: FieryFields
     stats.sets++
     stats.writes++
 
+    callbacks.onSet(data, values, cache)
+
     return cache.ref.set(values)
   }
+
+  callbacks.onInvalidOperation(data, 'sync')
 
   return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
@@ -79,8 +128,12 @@ export function remove (this: FieryInstance, data: FieryData, excludeSubs: bool
 
     stats.deletes++
 
+    callbacks.onDelete(data, cache)
+
     return cache.ref.delete()
   }
+
+  callbacks.onInvalidOperation(data, 'remove')
 
   return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
@@ -129,8 +182,12 @@ export function clear (this: FieryInstance, data: FieryData, props: FieryFields)
       promises.push(ref.update(deleting))
     }
 
+    callbacks.onClear(data, propsArray)
+
     return Promise.all(promises)
   }
+
+  callbacks.onInvalidOperation(data, 'clear')
 
   return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
@@ -151,36 +208,33 @@ export function getChanges (this: FieryInstance,
 
     stats.reads++
 
-    const getter: Promise<firebase.firestore.DocumentSnapshot> = cache.ref.get()
+    callbacks.onGetChanges(data, cache, fields)
 
-    return new Promise((resolve, reject) =>
+    return cache.ref.get().then(doc =>
     {
-      getter.then((doc: firebase.firestore.DocumentSnapshot) =>
+      const encoded: FieryData = parseDocument(doc, options)
+      const remote: FieryData = {}
+      const local: FieryData = {}
+      let changed = false
+
+      for (let prop in current)
       {
-        const encoded: FieryData = parseDocument(doc, options)
-        const remote: FieryData = {}
-        const local: FieryData = {}
-        let changed = false
+        let remoteValue = encoded[prop]
+        let localValue = current[prop]
 
-        for (let prop in current)
+        if (!equality(remoteValue, localValue))
         {
-          let remoteValue = encoded[prop]
-          let localValue = current[prop]
-
-          if (!equality(remoteValue, localValue))
-          {
-            changed = true
-            remote[prop] = remoteValue
-            local[prop] = localValue
-          }
+          changed = true
+          remote[prop] = remoteValue
+          local[prop] = localValue
         }
+      }
 
-        resolve({ changed, remote, local })
-      })
-
-      getter.catch(error => reject(error))
+      return Promise.resolve({ changed, remote, local })
     })
   }
+
+  callbacks.onInvalidOperation(data, 'getChanges')
 
   return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
@@ -286,6 +340,8 @@ export function buildFromCollection <T extends FieryData>(collection: firebase.f
       cache.data[prop] = value
     })
   }
+
+  callbacks.onBuild(cache.data, cache)
 
   return cache.data as T
 }

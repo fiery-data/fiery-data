@@ -34,6 +34,7 @@ export type FieryFields = string | string[]
 export type FieryCache = { [uid: string]: FieryCacheEntry }
 
 
+
 export interface FierySystem
 {
   removeNamed: (name: string) => any
@@ -103,6 +104,7 @@ export interface FieryOptions
   {
     sync?: string
     update?: string
+    save?: string
     remove?: string
     ref?: string
     clear?: string
@@ -175,6 +177,8 @@ export interface FieryInstance
   linkSources: (container: any) => void
 
   update: (data: FieryData, fields?: FieryFields) => Promise<void>
+
+  save: (data: FieryData, fields?: FieryFields) => Promise<void>
 
   sync: (data: FieryData, fields?: FieryFields) => Promise<void>
 

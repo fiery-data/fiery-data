@@ -7,6 +7,7 @@ export const PATH_SEPARATOR = '/'
 export const RECORD_OPTIONS = {
   sync: '$sync',
   update: '$update',
+  save: '$save',
   remove: '$remove',
   ref: '$ref',
   clear: '$clear',

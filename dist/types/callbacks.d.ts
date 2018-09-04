@@ -1,0 +1,22 @@
+import { FieryData, FieryCacheEntry, FieryTarget, FieryEntry, FieryInstance } from './types';
+export declare const callbacks: {
+    onInvalidOperation(data: FieryData, operation: string): void;
+    onUpdate(data: FieryData, values: FieryData, cache: FieryCacheEntry): void;
+    onSet(data: FieryData, values: FieryData, cache: FieryCacheEntry): void;
+    onDelete(data: FieryData, cache: FieryCacheEntry): void;
+    onClear(data: FieryData, props: string[]): void;
+    onGetChanges(data: FieryData, cache: FieryCacheEntry, fields?: string[] | undefined): void;
+    onBuild(data: FieryData, cache: FieryCacheEntry): void;
+    onCacheCreate(cache: FieryCacheEntry): void;
+    onCacheDestroy(cache: FieryCacheEntry): void;
+    onSubCreate(data: FieryData, sub: string, cache: FieryCacheEntry): void;
+    onSubDestroy(data: FieryData, sub: string, cache: FieryCacheEntry): void;
+    onCollectionAdd(data: FieryData, target: FieryTarget, entry: FieryEntry): void;
+    onCollectionRemove(data: FieryData, target: FieryTarget, entry: FieryEntry): void;
+    onCollectionModify(data: FieryData, target: FieryTarget, entry: FieryEntry): void;
+    onCollectionChanged(target: FieryTarget, entry: FieryEntry): void;
+    onDocumentUpdate(data: FieryData, entry: FieryEntry): void;
+    onDocumentMissing(data: FieryData, entry: FieryEntry): void;
+    onInstanceCreate(instance: FieryInstance): void;
+    onInstanceDestroy(instance: FieryInstance): void;
+};

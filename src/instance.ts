@@ -5,6 +5,7 @@ import { factory } from './factory'
 import { getEntry, closeEntry } from './entry'
 import { removeCacheFromInstance } from './cache'
 import { globalOptions } from './options'
+import { callbacks } from './callbacks'
 import * as operations from './operations'
 
 
@@ -25,6 +26,7 @@ export function getInstance (systemOverrides?: Partial<FierySystem>): FieryInsta
   instance.sources = {}
   instance.cache = {}
   instance.update = operations.update
+  instance.save = operations.save
   instance.sync = operations.sync
   instance.remove = operations.remove
   instance.clear = operations.clear
@@ -38,6 +40,8 @@ export function getInstance (systemOverrides?: Partial<FierySystem>): FieryInsta
   instance.destroy = destroy
   instance.free = free
   instance.linkSources = linkSources
+
+  callbacks.onInstanceCreate(instance as FieryInstance)
 
   return instance as FieryInstance
 }
@@ -53,6 +57,8 @@ function destroy(this: FieryInstance)
   this.options = {}
   this.sources = {}
   this.cache = {}
+
+  callbacks.onInstanceDestroy(this)
 }
 
 function free (this: FieryInstance, target: FieryTarget)
