@@ -7,7 +7,7 @@ import { FierySystem, FieryEntry, FieryTarget, FieryData, FieryOptions, FieryMap
 import { refreshData } from '../data'
 import { getCacheForDocument, removeCacheFromEntry, removeDataFromEntry, destroyCache } from '../cache'
 import { forEach } from '../util'
-import { updatePointers } from '../entry'
+import { updatePointers, getChanges } from '../entry'
 import { stats } from '../stats'
 import { callbacks } from '../callbacks'
 
@@ -77,21 +77,26 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
       }
     }
 
-    system.arrayResize(target, 0)
-
-    querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
+    options.onMutate(() =>
     {
-      const cache: FieryCacheEntry = getCacheForDocument(entry, doc, true)
+        system.arrayResize(target, 0)
 
-      refreshData(cache, doc, entry)
+        querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
+        {
+          const cache: FieryCacheEntry = getCacheForDocument(entry, doc, true)
 
-      system.arrayAdd(target, cache.data)
+          refreshData(cache, doc, entry)
 
-      delete missing[cache.uid]
+          system.arrayAdd(target, cache.data)
 
-      callbacks.onCollectionAdd(cache.data, target, entry)
+          delete missing[cache.uid]
 
-    }, options.onError)
+          callbacks.onCollectionAdd(cache.data, target, entry)
+
+        }, options.onError)
+
+        return target
+    })
 
     forEach(missing, data =>
     {
@@ -117,53 +122,60 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
   {
     const target: FieryData[] = entry.target as FieryData[]
 
-    (<any>querySnapshot).docChanges().forEach((change: firebase.firestore.DocumentChange) =>
+    options.onMutate(() =>
     {
-      const doc: firebase.firestore.DocumentSnapshot = change.doc
-      const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
+      const changes = getChanges(querySnapshot)
 
-      switch (change.type)
+      changes.forEach((change: firebase.firestore.DocumentChange) =>
       {
-        case 'added':
-          const created: FieryData = refreshData(cache, doc, entry)
-          system.arraySet(target, change.newIndex, created)
+        const doc: firebase.firestore.DocumentSnapshot = change.doc
+        const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
 
-          callbacks.onCollectionAdd(created, target, entry)
-          break
+        switch (change.type)
+        {
+          case 'added':
+            const created: FieryData = refreshData(cache, doc, entry)
+            system.arraySet(target, change.newIndex, created)
 
-        case 'removed':
-          callbacks.onCollectionRemove(cache.data, target, entry)
+            callbacks.onCollectionAdd(created, target, entry)
+            break
 
-          if (doc.exists)
-          {
-            removeCacheFromEntry(entry, cache)
-          }
-          else
-          {
-            if (options.propExists)
+          case 'removed':
+            callbacks.onCollectionRemove(cache.data, target, entry)
+
+            if (doc.exists)
             {
-              system.setProperty(cache.data, options.propExists, false)
+              removeCacheFromEntry(entry, cache)
+            }
+            else
+            {
+              if (options.propExists)
+              {
+                system.setProperty(cache.data, options.propExists, false)
+              }
+
+              cache.exists = false
+              destroyCache(cache)
+            }
+            break
+
+          case 'modified':
+            const updated: FieryData = refreshData(cache, doc, entry)
+
+            if (change.oldIndex !== change.newIndex)
+            {
+              system.arraySet(target, change.newIndex, updated)
             }
 
-            cache.exists = false
-            destroyCache(cache)
-          }
-          break
+            callbacks.onCollectionModify(updated, target, entry)
+            break
+        }
+      }, options.onError)
 
-        case 'modified':
-          const updated: FieryData = refreshData(cache, doc, entry)
+      system.arrayResize(target, querySnapshot.size)
 
-          if (change.oldIndex !== change.newIndex)
-          {
-            system.arraySet(target, change.newIndex, updated)
-          }
-
-          callbacks.onCollectionModify(updated, target, entry)
-          break
-      }
-    }, options.onError)
-
-    system.arrayResize(target, querySnapshot.size)
+      return target
+    })
 
     options.onSuccess(target)
 

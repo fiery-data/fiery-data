@@ -145,6 +145,7 @@ export interface FieryOptions
 
   onRemove: () => any
 
+  onMutate: (mutate: () => FieryTarget) => void
 }
 
 export interface FieryInstance

@@ -98,6 +98,7 @@ export interface FieryOptions {
     onSuccess: (target: FieryTarget) => any;
     onMissing: () => any;
     onRemove: () => any;
+    onMutate: (mutate: () => FieryTarget) => void;
 }
 export interface FieryInstance {
     <T extends FieryTarget>(source: FierySource, options?: FieryOptionsInput, name?: string): T;

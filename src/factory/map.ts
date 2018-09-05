@@ -9,7 +9,7 @@ import { forEach } from '../util'
 import { refreshData } from '../data'
 import { getCacheForDocument, removeDataFromEntry, removeCacheFromEntry, destroyCache } from '../cache'
 import { stats } from '../stats'
-import { updatePointers } from '../entry'
+import { updatePointers, getChanges } from '../entry'
 import { callbacks } from '../callbacks'
 
 
@@ -68,21 +68,26 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
     const target: FieryMap = entry.target as FieryMap
     const missing: FieryMap = { ...target }
 
-    querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
+    options.onMutate(() =>
     {
-      const cache: FieryCacheEntry = getCacheForDocument(entry, doc, true)
+      querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
+      {
+        const cache: FieryCacheEntry = getCacheForDocument(entry, doc, true)
 
-      refreshData(cache, doc, entry)
+        refreshData(cache, doc, entry)
 
-      system.setProperty(target, doc.id, cache.data)
+        system.setProperty(target, doc.id, cache.data)
 
-      delete missing[doc.id]
+        delete missing[doc.id]
 
-      callbacks.onCollectionAdd(cache.data, target, entry)
+        callbacks.onCollectionAdd(cache.data, target, entry)
 
-    }, options.onError)
+      }, options.onError)
 
-    forEach(missing, (missed, key) => system.removeProperty(target, key as string))
+      forEach(missing, (missed, key) => system.removeProperty(target, key as string))
+
+      return target
+    })
 
     forEach(missing, data =>
     {
@@ -108,49 +113,56 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
   {
     const target: FieryMap = entry.target as FieryMap
 
-    (<any>querySnapshot).docChanges().forEach((change: firebase.firestore.DocumentChange) =>
+    options.onMutate(() =>
     {
-      const doc: firebase.firestore.DocumentSnapshot = change.doc
-      const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
+      const changes = getChanges(querySnapshot)
 
-      switch (change.type)
+      changes.forEach((change: firebase.firestore.DocumentChange) =>
       {
-        case 'modified':
-          const updated: FieryData = refreshData(cache, doc, entry)
-          system.setProperty(target, doc.id, updated)
+        const doc: firebase.firestore.DocumentSnapshot = change.doc
+        const cache: FieryCacheEntry = getCacheForDocument(entry, doc)
 
-          callbacks.onCollectionModify(updated, target, entry)
-          break
+        switch (change.type)
+        {
+          case 'modified':
+            const updated: FieryData = refreshData(cache, doc, entry)
+            system.setProperty(target, doc.id, updated)
 
-        case 'added':
-          const created: FieryData = refreshData(cache, doc, entry)
-          system.setProperty(target, doc.id, created)
+            callbacks.onCollectionModify(updated, target, entry)
+            break
 
-          callbacks.onCollectionAdd(created, target, entry)
-          break
+          case 'added':
+            const created: FieryData = refreshData(cache, doc, entry)
+            system.setProperty(target, doc.id, created)
 
-        case 'removed':
-          callbacks.onCollectionRemove(cache.data, target, entry)
+            callbacks.onCollectionAdd(created, target, entry)
+            break
 
-          system.removeProperty(target, doc.id)
+          case 'removed':
+            callbacks.onCollectionRemove(cache.data, target, entry)
 
-          if (doc.exists)
-          {
-            removeCacheFromEntry(entry, cache)
-          }
-          else
-          {
-            if (options.propExists)
+            system.removeProperty(target, doc.id)
+
+            if (doc.exists)
             {
-              system.setProperty(cache.data, options.propExists, false)
+              removeCacheFromEntry(entry, cache)
             }
+            else
+            {
+              if (options.propExists)
+              {
+                system.setProperty(cache.data, options.propExists, false)
+              }
 
-            cache.exists = false
-            destroyCache(cache)
-          }
-          break
-      }
-    }, options.onError)
+              cache.exists = false
+              destroyCache(cache)
+            }
+            break
+        }
+      }, options.onError)
+
+      return target
+    })
 
     options.onSuccess(target)
 

@@ -25,7 +25,12 @@ export function factory (entry: FieryEntry): FieryData
 
   const onSnapshot = (doc: firebase.firestore.DocumentSnapshot) =>
   {
-    handleDocumentUpdate(cache, entry, doc)
+    options.onMutate(() =>
+    {
+        handleDocumentUpdate(cache, entry, doc)
+
+        return cache.data
+    })
 
     missingSynchronously = !doc.exists
   }

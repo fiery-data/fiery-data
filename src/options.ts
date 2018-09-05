@@ -1,6 +1,6 @@
 
 import { PROP_UID, PROP_VALUE, RECORD_OPTIONS } from './constants'
-import { FieryOptionsInput, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FierySource, FieryData, FieryMap, FieryEquality, FieryMergeStrategy, FieryMergeStrategies } from './types'
+import { FieryOptionsInput, FieryTarget, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FierySource, FieryData, FieryMap, FieryEquality, FieryMergeStrategy, FieryMergeStrategies } from './types'
 import { parseDate, isObject, isFunction, isArray, coalesce, forEach, isDefined, isString } from './util'
 import * as operations from './operations'
 
@@ -21,6 +21,10 @@ export const globalOptions =
     onSuccess: (results: any) => {},
 
     onRemove: () => {},
+
+    onMutate: (mutate: () => FieryTarget) => {
+      mutate()
+    },
 
     liveOptions: {},
 
@@ -310,5 +314,6 @@ export const mergeOptions: FieryMergeStrategies =
   onSuccess:          mergeStrategy.replace,
   onMissing:          mergeStrategy.replace,
   onRemove:           mergeStrategy.replace,
+  onMutate:           mergeStrategy.replace,
   sub:                mergeStrategy.shallow
 }
