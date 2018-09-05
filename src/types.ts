@@ -168,7 +168,7 @@ export interface FieryInstance
 
   entryList: (FieryEntry | null)[]
 
-  entryFor: (target: FieryTarget) => FieryEntry | null
+  entryFor: (target: string | FieryTarget) => FieryEntry | null
 
   cache: FieryCache
 
@@ -177,6 +177,8 @@ export interface FieryInstance
   free: (target: FieryTarget) => void
 
   linkSources: (container: any) => void
+
+  pager: (target: string | FieryTarget) => FieryPager | null
 
   update: (data: FieryData, fields?: FieryFields) => Promise<void>
 
@@ -224,6 +226,8 @@ export type FieryRecordSync = (fields?: FieryFields) => Promise<void>
 
 export type FieryRecordUpdate = (fields?: FieryFields) => Promise<void>
 
+export type FieryRecordSave = (fields?: FieryFields) => Promise<void>
+
 export type FieryRecordRemove = (excludeSubs: boolean) => Promise<void>
 
 export type FieryRecordRef = (sub?: string) => FierySource
@@ -239,6 +243,23 @@ export type FieryRecordChanges = (fieldsOrEquality: FieryFields | FieryEquality,
 export type FieryRecordProperties =
 {
   [prop: string]: { value: any }
+}
+
+export interface FieryPager
+{
+  index: number
+
+  hasQuery (): boolean
+
+  hasData (): boolean
+
+  hasNext (): boolean
+
+  hasPrev (): boolean
+
+  next (): boolean
+
+  prev (): boolean
 }
 
 export interface FieryEntry
@@ -266,6 +287,8 @@ export interface FieryEntry
 
     update: FieryRecordUpdate
 
+    save: FieryRecordSave
+
     remove: FieryRecordRemove
 
     ref: FieryRecordRef
@@ -282,6 +305,16 @@ export interface FieryEntry
   recordProperties: FieryRecordProperties
 
   promise?: Promise<firebase.firestore.QuerySnapshot>
+
+  last?: firebase.firestore.DocumentSnapshot
+
+  first?: firebase.firestore.DocumentSnapshot
+
+  query?: firebase.firestore.Query
+
+  requery?: (query: firebase.firestore.Query) => void
+
+  pager?: FieryPager
 
   off?: () => any
 

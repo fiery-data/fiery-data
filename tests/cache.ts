@@ -69,7 +69,10 @@ describe('cache', function()
     })
 
     const $fiery = $getFiery()
-    const posts: any = $fiery(fs.collection('posts'), 'post')
+    const posts: any[] = $fiery(fs.collection('posts'), 'post')
+
+    expect(posts).to.be.ok
+    expect(posts.length).to.equal(1)
 
     // posts
     // posts/1/comments

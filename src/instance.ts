@@ -1,6 +1,6 @@
 
 import { FierySystem, FieryInstance, FieryOptionsInput, FieryTarget, FierySource, FieryEntry, FieryOptions } from './types'
-import { forEach } from './util'
+import { forEach, isString } from './util'
 import { factory } from './factory'
 import { getEntry, closeEntry } from './entry'
 import { removeCacheFromInstance } from './cache'
@@ -25,6 +25,7 @@ export function getInstance (systemOverrides?: Partial<FierySystem>): FieryInsta
   instance.options = {}
   instance.sources = {}
   instance.cache = {}
+  instance.pager = operations.pager
   instance.update = operations.update
   instance.save = operations.save
   instance.sync = operations.sync
@@ -71,8 +72,13 @@ function free (this: FieryInstance, target: FieryTarget)
   }
 }
 
-function entryFor (this: FieryInstance, target: FieryTarget): FieryEntry | null
+function entryFor (this: FieryInstance, target: string | FieryTarget): FieryEntry | null
 {
+  if (isString(target))
+  {
+    return this.entry[ target ]
+  }
+
   const entries = this.entryList
 
   for (let i = 0; i < entries.length; i++)

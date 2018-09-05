@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
-import { FieryInstance, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields, FieryTarget } from './types';
+import { FieryInstance, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields, FieryTarget, FieryPager } from './types';
+export declare function pager(this: FieryInstance, target: FieryTarget): FieryPager | null;
 export declare function save(this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>;
 export declare function update(this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>;
 export declare function sync(this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>;

@@ -3,14 +3,24 @@ import * as firebase from 'firebase'
 
 
 
-import { FieryInstance, FieryCacheEntry, FieryOptions, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields, FieryTarget } from './types'
+import { FieryInstance, FieryCacheEntry, FieryOptions, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields, FieryTarget, FieryPager } from './types'
 import { parseDocument, encodeData } from './data'
 import { forEach, isEqual, isDefined, isFunction, isString, getFields } from './util'
 import { getCacheForData, getCacheForReference } from './cache'
 import { stats } from './stats'
 import { callbacks } from './callbacks'
+import { getPager } from './pager'
 
 
+
+export function pager (this: FieryInstance, target: FieryTarget): FieryPager | null
+{
+  const entry = this.entryFor(target)
+
+  return entry
+    ? (entry.pager ? entry.pager : entry.pager = getPager(entry))
+    : null
+}
 
 export function save (this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>
 {
@@ -279,23 +289,11 @@ export function createSub <T extends FieryData>(this: FieryInstance, data: Fiery
 
 export function build <T extends FieryData>(this: FieryInstance, target: string | FieryTarget, initial?: FieryData): T
 {
-  if (isString(target))
-  {
-    if (target in this.entry)
-    {
-      const entry: FieryEntry = this.entry[target]
+  const entry = this.entryFor(target)
 
-      return buildFromCollection (entry.source as firebase.firestore.CollectionReference, entry, initial)
-    }
-  }
-  else
+  if (entry)
   {
-    const entry = this.entryFor(target)
-
-    if (entry)
-    {
-      return buildFromCollection (entry.source as firebase.firestore.CollectionReference, entry, initial)
-    }
+    return buildFromCollection (entry.source as firebase.firestore.CollectionReference, entry, initial)
   }
 
   throw 'Cannot build ' + target + + ', it does not exist in the current $fiery instance.'

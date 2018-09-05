@@ -99,7 +99,7 @@ database the document is stored in, the collection, and with which options.
 A more advanced example with classes, active record, querying, and definitions
 
 ```typescript
-import $getFiery, { define, FieryRecordUpdate, FieryRecordRemove } from 'fiery-data'
+import $getFiery, { define, FieryRecordSave, FieryRecordRemove } from 'fiery-data'
 
 // classes are not required, but supported
 class Task {
@@ -118,7 +118,7 @@ class Task {
   }
 
   // these are injected by recordOptions
-  save: FieryRecordUpdate
+  save: FieryRecordSave
   remove: FieryRecordRemove
 }
 
@@ -130,7 +130,7 @@ define({
     query: q => q.orderBy('edited_at', 'desc'),
     record: true,
     recordOptions: {
-      update: 'save',
+      save: 'save',
       remove: 'remove'
     }
   }
@@ -143,13 +143,13 @@ const fs = firebase.firestore(app)
 const $fiery = $getFiery(/* options for binding to other frameworks */)
 
 // a single document, kept up to date
-const specificTask: Task = $fiery(ds.doc('tasks/1'), 'task')
+const specificTask: Task = $fiery(fs.doc('tasks/1'), 'task')
 
 // all documents in the collection, live (ordered by most recently edited)
-const allTasks: Task[] = $fiery(ds.collection('tasks'), 'task')
+const allTasks: Task[] = $fiery(fs.collection('tasks'), 'task')
 
 // all done tasks, ordered by most recently done
-const doneTasks: Task[] = $fiery(ds.collection('tasks'), {
+const doneTasks: Task[] = $fiery(fs.collection('tasks'), {
   extends: 'task',
   query: q => q.where('done', '==', true).orderBy('done_at', 'desc')
 })
@@ -165,11 +165,11 @@ Another advanced example with sub collections (blog with live comments)
 
 ```typescript
 import $getFiery, { define, setGlobalOptions,
-  FieryRecordUpdate, FieryRecordRemove, FieryRecordCreate, FieryRecordBuild } from 'fiery-data'
+  FieryRecordSave, FieryRecordRemove, FieryRecordCreate, FieryRecordBuild } from 'fiery-data'
 
 // Classes
 class ActiveRecord {
-  save: FieryRecordUpdate
+  save: FieryRecordSave
   remove: FieryRecordRemove
   create: FieryRecordCreate
   build: FieryRecordBuild
@@ -196,7 +196,7 @@ class BlogPostComment extends ActiveRecord {
 setGlobalOptions({
   record: true,
   recordOptions: {
-    update: 'save',
+    save: 'save',
     remove: 'remove',
     create: 'create',
     build: 'build'
@@ -286,6 +286,11 @@ $fiery.destroy()
     - the data of a document to update
   - **fields**
     - optionally you can pass a field name or array of fields to update (as opposed to all)
+- `$fiery.save ( data, fields? ): Promise<void>`
+  - **data**
+    - the data of a document to save (update if it exists, set if it does not)
+  - **fields**
+    - optionally you can pass a field name or array of fields to update (as opposed to all)
 - `$fiery.sync ( data, fields? ): Promise<void>`
   - **data**
     - the data of a document to update. any fields not on the document or specified in fields will be removed
@@ -311,19 +316,38 @@ $fiery.destroy()
       - `changed` is either true or false
       - `remote` are the changed saved values
       - `local` are the changed unsaved values
+- `$fiery.pager ( target ): FieryPager`
+  - **target**
+    - the collection to paginate
 - `$fiery.ref ( data, sub? ): DocumentReference | CollectionReference`
   - **data**
     - the data to get the firebase reference of
   - **sub**
     - a sub collection of the given data to return
 - `$fiery.create ( target, initial? )`
-  - TODO
+  - **target**
+    - the collection to add a value to and save
+  - **initial**
+    - the initial values of the data being created
 - `$fiery.createSub ( target, sub, initial? )`
-  - TODO
+  - **target**
+    - the target which has the sub collection
+  - **sub**
+    - the sub collection to add a value to and save
+  - **initial**
+    - the initial values of the data being created
 - `$fiery.build ( target, initial? )`
-  - TODO
+  - **target**
+    - the collection to add a value (unsaved)
+  - **initial**
+    - the initial values of the data being built
 - `$fiery.buildSub ( target, sub, initial? )`
-  - TODO
+  - **target**
+    - the target which has the sub collection
+  - **sub**
+    - the sub collection to add a value (unsaved)
+  - **initial**
+    - the initial values of the data being created
 - `$fiery.free ( target ): void`
   - stops live data on the target and removes cached values when possible
 - `$fiery.destroy (): void`

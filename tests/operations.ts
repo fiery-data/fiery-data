@@ -3,7 +3,7 @@
 /// <reference path="../node_modules/@types/chai/index.d.ts" />
 
 import $getFiery, { define, setGlobalOptions, getCacheForData } from '../src'
-import { FierySource, FieryChanges } from '../src/types'
+import { FierySource, FieryChanges, FieryOptionsInput } from '../src/types'
 import { globalOptions } from '../src/options'
 import { getStore, getStored } from './util'
 import { expect, assert } from 'chai'
@@ -464,6 +464,82 @@ describe('operations', function()
     expect(todo1.children[0]).to.equal(todo3)
 
     $fiery.destroy()
+  })
+
+  it('pager', function() {
+
+    const fs = getStore('operations pager', {
+      'todos/1': { name: 'T1', order: 1 },
+      'todos/2': { name: 'T2', order: 2 },
+      'todos/3': { name: 'T3', order: 3 },
+      'todos/4': { name: 'T4', order: 4 },
+      'todos/5': { name: 'T5', order: 5 },
+      'todos/6': { name: 'T6', order: 6 },
+      'todos/7': { name: 'T7', order: 7 },
+      'todos/8': { name: 'T8', order: 8 },
+      'todos/9': { name: 'T9', order: 9 }
+    })
+
+    const $fiery = $getFiery()
+
+    const options: FieryOptionsInput = {
+      extends: 'todo',
+      query: q => q.orderBy('order').limit(5)
+    }
+
+    const todos: any[] = $fiery(fs.collection('todos'), options, 'todos')
+
+    expect(todos).to.be.ok
+    expect(todos.length).to.equal(5)
+    expect(todos.map(t => t.name)).to.deep.equal(['T1', 'T2', 'T3', 'T4', 'T5'])
+
+    const pager = $fiery.pager(todos)
+
+    expect(pager).to.be.ok
+
+    if (pager) {
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.false
+      expect(pager.index).to.equal(0)
+
+      expect(pager.next()).to.be.true
+
+      expect(todos.length).to.equal(4)
+      expect(todos.map(t => t.name)).to.deep.equal(['T6', 'T7', 'T8', 'T9'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.true
+      expect(pager.index).to.equal(1)
+
+      expect(pager.next()).to.be.true
+
+      expect(todos.length).to.equal(0)
+      expect(pager.hasNext()).to.be.false
+
+      expect(pager.prev()).to.be.true
+
+      expect(todos.length).to.equal(4)
+      expect(todos.map(t => t.name)).to.deep.equal(['T6', 'T7', 'T8', 'T9'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.true
+      expect(pager.index).to.equal(1)
+
+      expect(pager.prev()).to.be.true
+
+      expect(todos.length).to.equal(5)
+      expect(todos.map(t => t.name)).to.deep.equal(['T1', 'T2', 'T3', 'T4', 'T5'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.false
+      expect(pager.index).to.equal(0)
+
+      expect(pager.prev()).to.be.false
+
+      expect(todos.length).to.equal(5)
+      expect(todos.map(t => t.name)).to.deep.equal(['T1', 'T2', 'T3', 'T4', 'T5'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.false
+      expect(pager.index).to.equal(0)
+    }
+
   })
 
 })

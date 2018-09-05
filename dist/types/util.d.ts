@@ -5,6 +5,8 @@ export declare function isString(x?: any): x is string;
 export declare function isArray(x?: any): x is Array<any>;
 export declare function isDate(x?: any): x is Date;
 export declare function isDefined(x?: any): boolean;
+export declare function isNumber(x?: any): x is number;
+export declare function parseDate(x?: any): Date | any;
 export declare function coalesce(a?: any, b?: any): any;
 export declare function isCollectionSource(source: FierySource): boolean;
 export declare function getFields(fields?: FieryFields, otherwise?: string[]): string[] | undefined;

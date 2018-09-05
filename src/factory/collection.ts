@@ -7,6 +7,7 @@ import { FierySystem, FieryEntry, FieryTarget, FieryData, FieryOptions, FieryMap
 import { refreshData } from '../data'
 import { getCacheForDocument, removeCacheFromEntry, removeDataFromEntry, destroyCache } from '../cache'
 import { forEach } from '../util'
+import { updatePointers } from '../entry'
 import { stats } from '../stats'
 import { callbacks } from '../callbacks'
 
@@ -23,29 +24,35 @@ export function factory (entry: FieryEntry): FieryData[]
   const query: CollectionQuery = (options.query
     ? options.query(entry.source as firebase.firestore.CollectionReference)
     : entry.source) as CollectionQuery
-  const initial = getInitialHandler(entry)
 
-  if (!entry.target)
+  entry.requery = (query) =>
   {
-    entry.target = options.newCollection()
+    const initial = getInitialHandler(entry)
+
+    if (!entry.target)
+    {
+      entry.target = options.newCollection()
+    }
+
+    stats.queries++
+
+    if (options.once)
+    {
+      entry.promise = query.get(options.onceOptions)
+        .then(initial)
+        .catch(options.onError)
+    }
+    else
+    {
+      entry.off = query.onSnapshot(
+        options.liveOptions,
+        getLiveHandler(entry, initial),
+        options.onError
+      )
+    }
   }
 
-  stats.queries++
-
-  if (options.once)
-  {
-    entry.promise = query.get(options.onceOptions)
-      .then(initial)
-      .catch(options.onError)
-  }
-  else
-  {
-    entry.off = query.onSnapshot(
-      options.liveOptions,
-      getLiveHandler(entry, initial),
-      options.onError
-    )
-  }
+  entry.requery(entry.query = query)
 
   return entry.target as FieryData[]
 }
@@ -94,6 +101,8 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
     })
 
     options.onSuccess(target)
+
+    updatePointers(entry, querySnapshot)
 
     callbacks.onCollectionChanged(target, entry)
   }
@@ -157,6 +166,8 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
     system.arrayResize(target, querySnapshot.size)
 
     options.onSuccess(target)
+
+    updatePointers(entry, querySnapshot)
 
     callbacks.onCollectionChanged(target, entry)
   }

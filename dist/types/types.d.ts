@@ -69,6 +69,7 @@ export interface FieryOptions {
     defaults: {
         [prop: string]: any | (() => any);
     };
+    timestamps?: string[];
     record?: boolean;
     recordOptions: {
         sync?: string;
@@ -109,11 +110,12 @@ export interface FieryInstance {
     };
     entry: FieryEntryMap;
     entryList: (FieryEntry | null)[];
-    entryFor: (target: FieryTarget) => FieryEntry | null;
+    entryFor: (target: string | FieryTarget) => FieryEntry | null;
     cache: FieryCache;
     destroy: () => void;
     free: (target: FieryTarget) => void;
     linkSources: (container: any) => void;
+    pager: (target: string | FieryTarget) => FieryPager | null;
     update: (data: FieryData, fields?: FieryFields) => Promise<void>;
     save: (data: FieryData, fields?: FieryFields) => Promise<void>;
     sync: (data: FieryData, fields?: FieryFields) => Promise<void>;
@@ -136,6 +138,7 @@ export interface FieryMetadata {
 }
 export declare type FieryRecordSync = (fields?: FieryFields) => Promise<void>;
 export declare type FieryRecordUpdate = (fields?: FieryFields) => Promise<void>;
+export declare type FieryRecordSave = (fields?: FieryFields) => Promise<void>;
 export declare type FieryRecordRemove = (excludeSubs: boolean) => Promise<void>;
 export declare type FieryRecordRef = (sub?: string) => FierySource;
 export declare type FieryRecordClear = (props: FieryFields) => Promise<void[]>;
@@ -147,6 +150,15 @@ export declare type FieryRecordProperties = {
         value: any;
     };
 };
+export interface FieryPager {
+    index: number;
+    hasQuery(): boolean;
+    hasData(): boolean;
+    hasNext(): boolean;
+    hasPrev(): boolean;
+    next(): boolean;
+    prev(): boolean;
+}
 export interface FieryEntry {
     name?: string;
     options: FieryOptions;
@@ -159,6 +171,7 @@ export interface FieryEntry {
     recordFunctions: {
         sync: FieryRecordSync;
         update: FieryRecordUpdate;
+        save: FieryRecordSave;
         remove: FieryRecordRemove;
         ref: FieryRecordRef;
         clear: FieryRecordClear;
@@ -168,6 +181,11 @@ export interface FieryEntry {
     };
     recordProperties: FieryRecordProperties;
     promise?: Promise<firebase.firestore.QuerySnapshot>;
+    last?: firebase.firestore.DocumentSnapshot;
+    first?: firebase.firestore.DocumentSnapshot;
+    query?: firebase.firestore.Query;
+    requery?: (query: firebase.firestore.Query) => void;
+    pager?: FieryPager;
     off?: () => any;
     id?: number;
     index?: number;

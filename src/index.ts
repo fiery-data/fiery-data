@@ -1,14 +1,12 @@
 
-import { define, setGlobalOptions, mergeStrategy, mergeOptions } from './options'
-import { getCacheForData, destroyCache } from './cache'
 import { getInstance } from './instance'
-import { stats } from './stats'
-import { callbacks } from './callbacks'
 
 export * from './constants'
 export * from './types'
-export { stats }
-export { callbacks }
-export { define, setGlobalOptions, mergeStrategy, mergeOptions }
-export { getCacheForData, destroyCache }
+export { stats } from './stats'
+export { callbacks } from './callbacks'
+export { define, setGlobalOptions, mergeStrategy, mergeOptions } from './options'
+export { getCacheForData, destroyCache } from './cache'
+
+export { getInstance }
 export default getInstance

@@ -112,6 +112,13 @@ export function getEntry (instance: FieryInstance, source: FierySource, optionsI
   return entry
 }
 
+export function updatePointers (entry: FieryEntry, querySnapshot: firebase.firestore.QuerySnapshot): void
+{
+  const docs = querySnapshot.docs
+  entry.first = docs[0]
+  entry.last = docs[docs.length - 1]
+}
+
 export function getEntryRecordFunctions (instance: FieryInstance)
 {
   return {

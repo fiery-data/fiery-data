@@ -1,6 +1,7 @@
 import { FieryOptionsInput, FieryOptions, FieryInstance, FieryEntry, FierySource, FieryData, FieryChanges, FieryEquality, FieryFields, FieryRecordProperties } from './types';
 export declare function closeEntry(entry: FieryEntry | null, remove?: boolean): void;
 export declare function getEntry(instance: FieryInstance, source: FierySource, optionsInput?: FieryOptionsInput, name?: string, namedSource?: boolean): FieryEntry;
+export declare function updatePointers(entry: FieryEntry, querySnapshot: firebase.firestore.QuerySnapshot): void;
 export declare function getEntryRecordFunctions(instance: FieryInstance): {
     sync: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
     update: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
