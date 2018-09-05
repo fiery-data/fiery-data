@@ -15,6 +15,8 @@ export const callbacks =
 
   onGetChanges (data: FieryData, cache: FieryCacheEntry, fields?: string[]) {},
 
+  onRefresh (data: FieryData, cachedOnly?: boolean) {},
+
   onBuild (data: FieryData, cache: FieryCacheEntry) {},
 
   onCacheCreate (cache: FieryCacheEntry) {},

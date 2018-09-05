@@ -6,6 +6,7 @@ export declare const callbacks: {
     onDelete(data: FieryData, cache: FieryCacheEntry): void;
     onClear(data: FieryData, props: string[]): void;
     onGetChanges(data: FieryData, cache: FieryCacheEntry, fields?: string[] | undefined): void;
+    onRefresh(data: FieryData, cachedOnly?: boolean | undefined): void;
     onBuild(data: FieryData, cache: FieryCacheEntry): void;
     onCacheCreate(cache: FieryCacheEntry): void;
     onCacheDestroy(cache: FieryCacheEntry): void;

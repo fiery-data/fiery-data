@@ -117,6 +117,7 @@ export interface FieryInstance {
     free: (target: FieryTarget) => void;
     linkSources: (container: any) => void;
     pager: (target: string | FieryTarget) => FieryPager | null;
+    refresh: (data: FieryData, cachedOnly?: boolean) => Promise<void>;
     update: (data: FieryData, fields?: FieryFields) => Promise<void>;
     save: (data: FieryData, fields?: FieryFields) => Promise<void>;
     sync: (data: FieryData, fields?: FieryFields) => Promise<void>;
@@ -137,6 +138,7 @@ export interface FieryMetadata {
     optionKey: string;
     options: FieryOptions;
 }
+export declare type FieryRecordRefresh = (cachedOnly?: boolean) => Promise<void>;
 export declare type FieryRecordSync = (fields?: FieryFields) => Promise<void>;
 export declare type FieryRecordUpdate = (fields?: FieryFields) => Promise<void>;
 export declare type FieryRecordSave = (fields?: FieryFields) => Promise<void>;
@@ -173,6 +175,7 @@ export interface FieryEntry {
         sync: FieryRecordSync;
         update: FieryRecordUpdate;
         save: FieryRecordSave;
+        refresh: FieryRecordRefresh;
         remove: FieryRecordRemove;
         ref: FieryRecordRef;
         clear: FieryRecordClear;

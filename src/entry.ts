@@ -115,6 +115,7 @@ export function getEntry (instance: FieryInstance, source: FierySource, optionsI
 export function updatePointers (entry: FieryEntry, querySnapshot: firebase.firestore.QuerySnapshot): void
 {
   const docs = querySnapshot.docs
+  
   entry.first = docs[0]
   entry.last = docs[docs.length - 1]
 }
@@ -137,6 +138,9 @@ export function getChanges (querySnapshot: firebase.firestore.QuerySnapshot): fi
 export function getEntryRecordFunctions (instance: FieryInstance)
 {
   return {
+    refresh: function(this: FieryData, cachedOnly?: boolean): Promise<void> {
+      return operations.refresh.call(instance, this, cachedOnly)
+    },
     sync: function(this: FieryData, fields?: FieryFields): Promise<void> {
       return operations.sync.call(instance, this, fields)
     },

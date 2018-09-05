@@ -3,8 +3,8 @@ import * as firebase from 'firebase'
 
 
 
-import { FieryInstance, FieryCacheEntry, FieryOptions, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields, FieryTarget, FieryPager } from './types'
-import { parseDocument, encodeData } from './data'
+import { FieryInstance, FierySystem, FieryCacheEntry, FieryOptions, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields, FieryTarget, FieryPager } from './types'
+import { parseDocument, encodeData, refreshData } from './data'
 import { forEach, isEqual, isDefined, isFunction, isString, getFields } from './util'
 import { getCacheForData, getCacheForReference } from './cache'
 import { stats } from './stats'
@@ -20,6 +20,51 @@ export function pager (this: FieryInstance, target: FieryTarget): FieryPager | n
   return entry
     ? (entry.pager ? entry.pager : entry.pager = getPager(entry))
     : null
+}
+
+export function refresh (this: FieryInstance, data: FieryData, cachedOnly: boolean = false): Promise<void>
+{
+  const cache: FieryCacheEntry | undefined = getCacheForData(data)
+
+  if (cache && cache.ref)
+  {
+    const entry: FieryEntry = cache.firstEntry
+    const options: FieryOptions = entry.options
+    const system: FierySystem = entry.instance.system
+    const getOptions: firebase.firestore.GetOptions = {
+      source: cachedOnly ? 'cache' : 'default'
+    }
+
+    stats.reads++
+
+    callbacks.onRefresh(data, cachedOnly)
+
+    return cache.ref.get(getOptions).then(doc =>
+    {
+      options.onMutate(() =>
+      {
+        if (doc.exists)
+        {
+          refreshData(cache, doc, entry)
+        }
+        else
+        {
+          if (options.propExists)
+          {
+            system.setProperty(cache.data, options.propExists, false)
+          }
+
+          cache.exists = false
+        }
+
+        return cache.data
+      })
+    })
+  }
+
+  callbacks.onInvalidOperation(data, 'refresh')
+
+  return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
 
 export function save (this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>

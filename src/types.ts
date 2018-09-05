@@ -181,6 +181,8 @@ export interface FieryInstance
 
   pager: (target: string | FieryTarget) => FieryPager | null
 
+  refresh: (data: FieryData, cachedOnly?: boolean) => Promise<void>
+
   update: (data: FieryData, fields?: FieryFields) => Promise<void>
 
   save: (data: FieryData, fields?: FieryFields) => Promise<void>
@@ -222,6 +224,8 @@ export interface FieryMetadata
   options: FieryOptions
 
 }
+
+export type FieryRecordRefresh = (cachedOnly?: boolean) => Promise<void>
 
 export type FieryRecordSync = (fields?: FieryFields) => Promise<void>
 
@@ -289,6 +293,8 @@ export interface FieryEntry
     update: FieryRecordUpdate
 
     save: FieryRecordSave
+
+    refresh: FieryRecordRefresh
 
     remove: FieryRecordRemove
 

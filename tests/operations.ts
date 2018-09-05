@@ -466,6 +466,29 @@ describe('operations', function()
     $fiery.destroy()
   })
 
+  it('refreshes', function(done) {
+
+    const fs = getStore('operations refreshes', {
+      'todos/1': { name: 'T1', order: 1 }
+    })
+
+    const $fiery = $getFiery()
+
+    const todo: any = $fiery(fs.doc('todos/1'))
+
+    todo.name = 'T2'
+
+    $fiery.refresh(todo)
+      .then(() =>
+      {
+        expect(todo.name).to.equal('T1')
+
+        $fiery.destroy()
+
+        done()
+      })
+  })
+
   it('pager', function() {
 
     const fs = getStore('operations pager', {

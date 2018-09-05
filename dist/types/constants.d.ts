@@ -4,6 +4,7 @@ export declare const UID_SEPARATOR = "///";
 export declare const ENTRY_SEPARATOR = "/";
 export declare const PATH_SEPARATOR = "/";
 export declare const RECORD_OPTIONS: {
+    refresh: string;
     sync: string;
     update: string;
     save: string;

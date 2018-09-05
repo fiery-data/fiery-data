@@ -4,6 +4,7 @@ export declare function getEntry(instance: FieryInstance, source: FierySource, o
 export declare function updatePointers(entry: FieryEntry, querySnapshot: firebase.firestore.QuerySnapshot): void;
 export declare function getChanges(querySnapshot: firebase.firestore.QuerySnapshot): firebase.firestore.DocumentChange[];
 export declare function getEntryRecordFunctions(instance: FieryInstance): {
+    refresh: (this: FieryData, cachedOnly?: boolean | undefined) => Promise<void>;
     sync: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
     update: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
     save: (this: FieryData, fields?: string | string[] | undefined) => Promise<void>;
