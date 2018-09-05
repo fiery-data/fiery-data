@@ -37,3 +37,8 @@ export function getStored (fs: firebase.firestore.Firestore, data: any): any
 
   return (<any>fs)._docs[uid.substring(uid.indexOf('///') + 3)]
 }
+
+export function getTimestamp(seconds: number, nanos: number): firebase.firestore.Timestamp
+{
+  return new firebase.firestore.Timestamp(seconds, nanos)
+}

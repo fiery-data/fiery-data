@@ -98,6 +98,8 @@ export interface FieryOptions
     [prop: string]: any | (() => any)
   }
 
+  timestamps?: string[]
+
   record?: boolean
 
   recordOptions:

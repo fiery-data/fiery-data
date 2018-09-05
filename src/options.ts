@@ -1,7 +1,7 @@
 
 import { PROP_UID, PROP_VALUE, RECORD_OPTIONS } from './constants'
 import { FieryOptionsInput, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FierySource, FieryData, FieryMap, FieryEquality, FieryMergeStrategy, FieryMergeStrategies } from './types'
-import { isObject, isFunction, isArray, coalesce, forEach, isDefined, isString } from './util'
+import { parseDate, isObject, isFunction, isArray, coalesce, forEach, isDefined, isString } from './util'
 import * as operations from './operations'
 
 
@@ -144,6 +144,21 @@ export function getOptions (options?: FieryOptionsInput, instance?: FieryInstanc
         excludeMap[subProp] = true
       }
     }
+  }
+
+  if (isArray(options.timestamps) && options.timestamps.length)
+  {
+    let decoders = options.decoders || {}
+
+    forEach(options.timestamps, timestamp =>
+    {
+      if (!(timestamp in decoders))
+      {
+        decoders[timestamp] = parseDate
+      }
+    })
+
+    options.decoders = decoders
   }
 
   return options as FieryOptions
@@ -290,6 +305,7 @@ export const mergeOptions: FieryMergeStrategies =
   liveOptions:        mergeStrategy.replace,
   include:            mergeStrategy.concat,
   exclude:            mergeStrategy.exclude,
+  timestamps:         mergeStrategy.concat,
   onError:            mergeStrategy.replace,
   onSuccess:          mergeStrategy.replace,
   onMissing:          mergeStrategy.replace,

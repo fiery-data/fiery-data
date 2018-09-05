@@ -38,6 +38,31 @@ export function isDefined (x?: any): boolean
   return typeof x !== 'undefined'
 }
 
+export function isNumber (x?: any): x is number
+{
+  return typeof x === 'number' && isFinite(x)
+}
+
+export function parseDate (x?: any): Date | any
+{
+  if (isDate(x))
+  {
+    return x
+  }
+
+  if (x && isFunction(x.toDate))
+  {
+    return x.toDate()
+  }
+
+  if (isNumber(x))
+  {
+    return new Date(x)
+  }
+
+  return x
+}
+
 export function coalesce (a?: any, b?: any): any
 {
   return isDefined(a) ? a : b

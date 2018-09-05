@@ -5,7 +5,7 @@
 import $getFiery, { define, setGlobalOptions, getCacheForData } from '../src'
 import { FierySource } from '../src/types'
 import { globalOptions } from '../src/options'
-import { getStore, getStored } from './util'
+import { getStore, getStored, getTimestamp } from './util'
 import { expect } from 'chai'
 
 describe('options', function()
@@ -173,6 +173,43 @@ describe('options', function()
     $fiery.sync(context.task)
 
     expect(context.task.exists).to.be.true
+
+    $fiery.destroy()
+  })
+
+  it('timestamps', function() {
+
+    const d1 = null
+    const d2 = 456
+    const d3 = new Date(789)
+    const d4 = getTimestamp(123, 0)
+
+    const fs = getStore('options timestamps', {
+      'tasks/1': {
+        name: 'T1',
+        done: false,
+        done_at: d1,
+        created_at: d2,
+        updated_at: d3,
+        named_at: d4
+      }
+    })
+
+    const $fiery = $getFiery()
+
+    const options = {
+      timestamps: ['done_at', 'created_at', 'updated_at', 'named_at']
+    }
+
+    const task: any = $fiery(fs.doc('tasks/1'), options, 'task')
+
+    expect(task.done_at).to.be.null
+    expect(task.created_at).to.be.an.instanceof(Date)
+    expect(task.updated_at).to.be.an.instanceof(Date)
+    expect(task.named_at).to.be.an.instanceof(Date)
+    expect(task.created_at.getTime()).to.equal(456)
+    expect(task.updated_at.getTime()).to.equal(789)
+    expect(task.named_at.getTime()).to.equal(123000)
 
     $fiery.destroy()
   })
