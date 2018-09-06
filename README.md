@@ -423,8 +423,7 @@ var cars2 = searchCars('Ford')
 function searchCars(make, limit)
 {
    var options = {
-      limit: limit,
-      query: cars => cars.where(make, '==', make)
+      query: cars => cars.where('make', '==', make).limit(limit)
    }
    return $fiery(fs.collection('cars'), options, 'searchCars') // name (searchCars) is required when parameterized
 }
