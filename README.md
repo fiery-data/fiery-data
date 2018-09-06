@@ -40,6 +40,7 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 - [Installation](#installation)
 - [Examples](#examples)
 - [API](#api)
+- [Feature Examples](#feature-examples)
 - [License](#license)
 
 ### Dependencies
@@ -371,7 +372,7 @@ $fiery.destroy()
 - `$fiery.destroy (): void`
   - calls free on all targets generated with `$fiery (...)`
 
-## Examples
+## Feature Examples
 
 ### Documents
 
