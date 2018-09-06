@@ -16,6 +16,7 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 ### Related
 
 - [fiery-vue](https://github.com/fiery-data/fiery-vue): fiery-data for VueJS
+- [fiery-vuex](https://github.com/fiery-data/fiery-vuex): fiery-data for Vuex
 
 **Contents**
 - [Dependencies](#dependencies)
