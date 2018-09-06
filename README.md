@@ -18,6 +18,7 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 - Documents [example](#documents)
 - Collections (stored as array or map) [example](#collections)
 - Queries (stored as array or map) [example](#queries)
+- Pagination [example](#pagination)
 - Real-time or once [example](#real-time-or-once)
 - Adding, updating, sync, removing, remove field [example](#adding-updating-overwriting-removing)
 - Sub-collections (with cascading deletions!) [example](#sub-collections)
@@ -415,6 +416,31 @@ var cars2 = searchCars('Ford')
 
 // cars1 === cars2, same array. Using the name ensures one query is no longer listened to - and only the most recent one
 ```
+
+### Pagination
+
+```javascript
+function searchCars(make, limit)
+{
+   var options = {
+      limit: limit, 
+      query: cars => cars.where(make, '==', make)
+   }
+   return $fiery(fs.collection('cars'), options, 'searchCars') // name (searchCars) is required when parameterized
+}
+
+var cars = searchCars('Honda', 10) // 10 at a time
+var pager = $fiery.pager(cars)
+
+pager.next() // next 10 please
+
+// pager.index // which page we're on
+// pager.hasNext() // typically returns true since we don't really know - unless cars is empty
+// pager.next() // executes the query again but on the next 10 results. index++
+// pager.hasPrev() // looks at pager.index to determines if there's a previous page
+// pager.prev() // executes the query again but on the previous 10 results. index--
+```
+
 
 ### Real-time or once
 
