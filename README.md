@@ -26,7 +26,7 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 - Add active record methods (sync, update, remove, clear, getChanges) [example](#active-record)
 - Control over what properties are sent on save [example](#save-fields)
 - Encode & decode properties [example](#encode--decode-properties)
-- Adding the key to the document [example](#adding-key-to-object)
+- Adding the key and exists to the document [example](#adding-key-and-exists-to-object)
 - Sharing, extending, defining, and global options [example](#sharing-extending-defining-and-global-options)
 - Callbacks (error, success, missing, remove) [example](#callbacks)
 - Custom binding / unbinding [example](#binding-and-unbinding)
@@ -635,12 +635,14 @@ var todos = $fiery(fs.collection('todos'), {
 })
 ```
 
-### Adding key to object
+### Adding key and exists to object
 
 ```javascript
-var todos = $fiery(fs.collection('todos'), {key: 'id', exclude: ['id']})
+var todos = $fiery(fs.collection('todos'), { key: 'id', propExists: 'exists', exclude: ['id', 'exists']})
+// must be excluded manually from saving if include is not specified
 
-// todos[i].id exists now
+// todos[i].id      => a string identifier of the document
+// todos[i].exists  => true or false if the document exists or not
 ```
 
 ### Sharing, extending, defining, and global options
