@@ -184,7 +184,7 @@ export interface FieryEntry {
         getChanges: FieryRecordChanges;
     };
     recordProperties: FieryRecordProperties;
-    promise?: Promise<firebase.firestore.QuerySnapshot>;
+    promise?: Promise<FieryTarget>;
     last?: firebase.firestore.DocumentSnapshot;
     first?: firebase.firestore.DocumentSnapshot;
     query?: firebase.firestore.Query;

@@ -5,7 +5,7 @@ export * from './constants'
 export * from './types'
 export { stats } from './stats'
 export { callbacks } from './callbacks'
-export { define, setGlobalOptions, mergeStrategy, mergeOptions } from './options'
+export { define, setGlobalOptions, mergeStrategy, mergeOptions, getOptions } from './options'
 export { getCacheForData, destroyCache } from './cache'
 
 export { getInstance }

@@ -311,7 +311,7 @@ export interface FieryEntry
 
   recordProperties: FieryRecordProperties
 
-  promise?: Promise<firebase.firestore.QuerySnapshot>
+  promise?: Promise<FieryTarget>
 
   last?: firebase.firestore.DocumentSnapshot
 

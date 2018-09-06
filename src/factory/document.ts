@@ -11,6 +11,8 @@ import { callbacks } from '../callbacks'
 
 
 type OnSnapshot = (querySnapshot: firebase.firestore.DocumentSnapshot) => any
+type OnResolve = (target: FieryTarget) => any
+type OnReject = (reason: any) => any
 
 
 
@@ -22,6 +24,8 @@ export function factory (entry: FieryEntry): FieryData
   const initialTarget: FieryTarget | undefined = entry.target
 
   let missingSynchronously = false
+  let resolve: OnResolve = () => {}
+  let reject: OnReject = () => {}
 
   const onSnapshot = (doc: firebase.firestore.DocumentSnapshot) =>
   {
@@ -33,6 +37,10 @@ export function factory (entry: FieryEntry): FieryData
     })
 
     missingSynchronously = !doc.exists
+
+    resolve(cache.data)
+
+    return cache.data
   }
 
   if (initialTarget && initialTarget !== cache.data)
@@ -52,10 +60,18 @@ export function factory (entry: FieryEntry): FieryData
   }
   else
   {
+    entry.promise = new Promise<FieryTarget>((_resolve, _reject) => {
+      resolve = _resolve
+      reject = _reject
+    })
+
     entry.off = source.onSnapshot(
       options.liveOptions,
       onSnapshot,
-      options.onError
+      (reason) => {
+        reject(reason)
+        options.onError(reason)
+      }
     )
   }
 

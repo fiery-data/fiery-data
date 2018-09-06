@@ -15,6 +15,8 @@ import { callbacks } from '../callbacks'
 
 
 type OnSnapshot = (querySnapshot: firebase.firestore.QuerySnapshot) => any
+type OnResolve = (target: FieryTarget) => any
+type OnReject = (reason: any) => any
 
 
 
@@ -45,10 +47,21 @@ function factory (entry: FieryEntry): FieryMap
     }
     else
     {
+      let resolve: OnResolve = () => {}
+      let reject: OnReject = () => {}
+
+      entry.promise = new Promise<FieryTarget>((_resolve, _reject) => {
+        resolve = _resolve
+        reject = _reject
+      })
+
       entry.off = query.onSnapshot(
         options.liveOptions,
-        getLiveHandler(entry, initial),
-        options.onError
+        getLiveHandler(entry, initial, resolve),
+        (reason) => {
+          reject(reason)
+          options.onError(reason)
+        }
       )
     }
   }
@@ -101,6 +114,8 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
     updatePointers(entry, querySnapshot)
 
     callbacks.onCollectionChanged(target, entry)
+
+    return target
   }
 }
 
@@ -172,7 +187,7 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
   }
 }
 
-function getLiveHandler (entry: FieryEntry, handleInitial: OnSnapshot): OnSnapshot
+function getLiveHandler (entry: FieryEntry, handleInitial: OnSnapshot, resolve: OnResolve): OnSnapshot
 {
   const handleUpdate: OnSnapshot = getUpdateHandler(entry)
   let handler: OnSnapshot = handleInitial
@@ -180,6 +195,7 @@ function getLiveHandler (entry: FieryEntry, handleInitial: OnSnapshot): OnSnapsh
   return (querySnapshot: firebase.firestore.QuerySnapshot) =>
   {
     handler(querySnapshot)
+    resolve(entry.target as FieryTarget)
     handler = handleUpdate
   }
 }
