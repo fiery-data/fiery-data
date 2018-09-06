@@ -13,6 +13,24 @@
 
 A library which binds Firestore data to plain arrays and objects and keeps them in sync.
 
+### Features
+
+- Documents [example](#documents)
+- Collections (stored as array or map) [example](#collections)
+- Queries (stored as array or map) [example](#queries)
+- Real-time or once [example](#real-time-or-once)
+- Data or computed properties [example](#data-or-computed)
+- Adding, updating, sync, removing, remove field [example](#adding-updating-overwriting-removing)
+- Sub-collections (with cascading deletions!) [example](#sub-collections)
+- Return instances of a class [example](#return-instances-of-a-class)
+- Add active record methods (sync, update, remove, clear, getChanges) [example](#active-record)
+- Control over what properties are sent on save [example](#save-fields)
+- Encode & decode properties [example](#encode--decode-properties)
+- Adding the key to the document [example](#adding-key-to-object)
+- Sharing, extending, defining, and global options [example](#sharing-extending-defining-and-global-options)
+- Callbacks (error, success, missing, remove) [example](#callbacks)
+- Custom binding / unbinding [example](#binding-and-unbinding)
+
 ### Related
 
 - [fiery-vue](https://github.com/fiery-data/fiery-vue): fiery-data for VueJS
@@ -354,6 +372,328 @@ $fiery.destroy()
 - `$fiery.destroy (): void`
   - calls free on all targets generated with `$fiery (...)`
 
+## Examples
+
+### Documents
+
+```javascript
+// real-time documents
+var settings = $fiery(fs.collection('settings').doc('system'))
+
+var currentUser = $fiery(fs.collection('users').doc(USER_ID)) 
+```
+
+### Collections
+
+```javascript
+// real-time array
+var cars = $fiery(fs.collection('cars')) 
+
+// real-time map: carMap[id] = car
+var carMap = $fiery(fs.collection('cars'), {map: true}) 
+```
+
+### Queries
+
+```javascript
+// real-time array
+var currentCars = $fiery(fs.collection('cars'), { 
+  query: cars => cars.where('make', '==', 'Honda')
+})
+
+// a parameterized query that can be invoked any number of times
+function searchCars(make)
+{
+   var options = {
+      query: cars => cars.where(make, '==', make)
+   }
+   return $fiery(fs.collection('cars'), options, 'searchCars') // name (searchCars) is required when parameterized
+}
+
+var cars1 = searchCars('Honda')
+var cars2 = searchCars('Ford')
+
+// cars1 === cars2, same array. Using the name ensures one query is no longer listened to - and only the most recent one
+```
+
+### Real-time or once
+
+```javascript
+// real-time is default, all you need to do is specify once: true to disable it
+
+// array populated once
+var cars = $fiery(fs.collection('cars'), {once: true})
+
+// current user populated once
+var currentUser = $fiery(fs.collection('users').doc(USER_ID), {once: true}), 
+```
+
+### Adding, updating, overwriting, removing
+
+```javascript
+var currentUser = $fiery(fs.collection('users').doc(USER_ID), {}, 'currentUser')
+var todos = $fiery(fs.collection('todos'), {}, 'todos') // name required to get access to sources
+
+function addTodo() // COLLECTIONS STORED IN stores
+{ 
+  $fiery.sources.todos.add({
+    name: 'Like fiery-data',
+    done: true
+  })
+  // OR
+  var savedTodo = $fiery.create(todos, { // you can pass this.todos or 'todos'
+    name: 'Love fiery-data',
+    done: false
+  })
+}
+
+function updateUser() 
+{
+  $fiery.update(currentUser)
+}
+function updateUserEmailOnly() 
+{
+ $fiery.update(currentUser, ['email'])
+}
+function updateAny(data) // any document can be passed, ex: this.todos[1], this.currentUser
+{ 
+  $fiery.update(data)
+}
+function overwrite(data) // only fields present on data will exist on sync
+{ 
+  $fiery.sync(data)
+}
+function remove(data) 
+{
+  $fiery.remove(data) // removes sub collections as well
+  $fiery.remove(data, true) // preserves sub collections
+}
+function removeName(todo) 
+{
+  $fiery.clear(todo, 'name') // can also specify an array of props/sub collections
+}
+```
+
+### Sub-collections
+
+You can pass the same options to sub, nesting as deep as you want!
+
+```javascript
+var todos = $fiery(fs.collection('todos'), {
+  sub: {
+    children: { // creates an array or map on each todo object: todo.children[]
+      // once, map, etc
+      query: children => children.orderBy('updated_at')
+    }
+  }
+})
+
+// todos[todoIndex].children[childIndex]
+
+function addChild(parent) 
+{
+  $fiery.ref(parent).collection('children').add( { /* values */ } )
+  // OR
+  $fiery.ref(parent, 'children').add( { /* values */ } )
+  // OR
+  var savedChild = $fiery.createSub(parent, 'children', { /* values */ } )
+  // OR
+  var unsavedChild = $fiery.buildSub(parent, 'children', { /* values */ } )
+}
+
+function clearChildren(parent)
+{
+  $fiery.clear(parent, 'children') // clear the sub collection of all children currently in parent.children
+}
+```
+
+### Return instances of a class
+
+```javascript
+function Todo() {}
+Todo.prototype = {
+  markDone (byUser) {
+    this.done = true
+    this.updated_at = Date.now()
+    this.updated_by = byUser.id
+  }
+}
+
+var todos $fiery(fs.collection('todos'), {
+  type: Todo,
+  // OR you can specify newDocument and do custom loading (useful for polymorphic data)
+  newDocument: function(initialData) {
+    var instance = new Todo()
+    instance.callSomeMethod()
+    return instance
+  }
+})
+```
+
+### Active Record
+
+```javascript
+// can be used with type, doesn't have to be
+function Todo() {}
+Todo.prototype = {
+  markDone (byUser) {
+    this.done = true
+    this.updated_at = Date.now()
+    this.updated_by = byUser.id
+    this.$save() // injected
+  }
+}
+
+var todos = $fiery(fs.collection('todos'), {
+  type: Todo,
+  record: true
+  // $sync, $update, $remove, $ref, $clear, $getChanges, $build, $create, $save, $refresh are functions added to every Todo instance
+})
+
+todos[i].$update()
+todos[i].markDone(currentUser)
+todos[i].$getChanges(['name', 'done']).then((changes) => {
+  // changes.changed, changes.remote, changes.local
+})
+
+var todosCustom = $fiery(fs.collection('todos'), {
+  record: true,
+  recordOptions: { // which methods do you want added to every object, and with what method names?
+    save: 'save',
+    remove: 'destroy'
+    // we don't want $ref, $clear, $getChanges, etc
+  }
+})
+
+todosCustom[i].save()
+todosCustom[i].destroy()
+```
+
+### Save fields
+
+```javascript
+var todos = $fiery(fs.collection('todos'), {
+  include: ['name', 'done'], // if specified, we ONLY send these fields on sync/update
+  exclude: ['hidden'] // if specified here, will not be sent on sync/update
+})
+
+var todo = todos[i]
+
+$fiery.update(todo) // sends name and done as configured above
+$fiery.update(todo, ['done']) // only send this value if it exists
+$fiery.update(todo, ['hidden']) // ignores exclude and include when specified
+
+// $fiery.save also takes fields, when you're not sure if your document exists.
+```
+
+### Encode & decode properties
+
+```javascript
+var todos = $fiery(fs.collection('todos'), {
+  // convert server values to local values
+  decoders: {
+    status(remoteValue, remoteData) {
+      return remoteValue === 1 ? 'done' : (remoteValue === 2 ? 'started' : 'not started')
+    }
+  },
+  // convert local values to server values
+  encoders: {
+    status(localValue, localData) {
+      return localValue === 'done' ? 1 : (localeValue === 'started' ? 2 : 0)
+    }
+  },
+  // optionally instead of individual decoders you can specify a function
+  decode(remoteData) {
+    // do some decoding, maybe do something special
+    return remoteData
+  }
+})
+```
+
+### Adding key to object
+
+```javascript
+var todos = $fiery(fs.collection('todos'), {key: 'id', exclude: ['id']})
+
+// todos[i].id exists now
+```
+
+### Sharing, extending, defining, and global options
+
+```javascript
+import { define, setGlobalOptions } from 'fiery-data'
+
+// ==== Sharing ====
+let Todo = {
+  shared: true, // necessary for non-global or defined options that are used multiple times
+  include: ['name', 'done', 'done_at']
+}
+
+// ==== Extending ====
+let TodoWithChildren = {
+  shared: true
+  extends: Todo,
+  sub: {
+    children: Todo
+  }
+}
+
+// ==== Defining ====
+define('post', {
+  // shared is not necessary here
+  include: ['title', 'content', 'tags']
+})
+
+// or multiple
+define({
+  comment: {
+    include: ['author', 'content', 'posted_at', 'status'],
+    sub: {
+      replies: 'comment' // we can reference options by name now, even circularly
+    }
+  },
+  images: {
+    include: ['url', 'tags', 'updated_at', 'title']
+  }
+})
+
+// ==== Global ====
+setGlobalOptions({
+  // lets make everything active record
+  record: true,
+  recordOptions: {
+    update: 'save',         // object.save(fields?)
+    sync: 'sync',           // object.sync(fields?)
+    remove: 'remove',       // object.remove()
+    clear: 'clear',         // object.clear(fields)
+    create: 'create',       // object.create(sub, initial?)
+    build: 'build',         // object.build(sub, initial?)
+    ref: 'doc',             // object.doc().collection('subcollection')
+    getChanges: 'changes'   // object.changes((changes, remote, local) => {})
+  }
+})
+
+var comments = $fiery(fs.collection('comment'), 'comment') // you can pass a named or Shared
+```
+
+### Callbacks
+
+```javascript
+var todos = $fiery(fs.collection('todos'), {
+  onSuccess: (todos) => {}, // everytime todos updates this is called
+  onError: (reason) => {}, // there was an error getting collection or document
+  onRemove: () => {}, // document was removed
+  onMissing: () => {} // document does not exist yet
+})
+```
+
+### Binding and Unbinding
+
+```javascript
+var todos = $fiery(fs.collection('todos')) // will be live updated
+
+$fiery.free(todos) // live updates stop
+```
 
 ## LICENSE
 [MIT](https://opensource.org/licenses/MIT)
