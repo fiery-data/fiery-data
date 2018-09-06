@@ -19,7 +19,6 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 - Collections (stored as array or map) [example](#collections)
 - Queries (stored as array or map) [example](#queries)
 - Real-time or once [example](#real-time-or-once)
-- Data or computed properties [example](#data-or-computed)
 - Adding, updating, sync, removing, remove field [example](#adding-updating-overwriting-removing)
 - Sub-collections (with cascading deletions!) [example](#sub-collections)
 - Return instances of a class [example](#return-instances-of-a-class)
