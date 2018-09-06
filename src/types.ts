@@ -262,9 +262,9 @@ export interface FieryPager
 
   hasPrev (): boolean
 
-  next (): boolean
+  next (): Promise<FieryTarget>
 
-  prev (): boolean
+  prev (): Promise<FieryTarget>
 }
 
 export interface FieryEntry

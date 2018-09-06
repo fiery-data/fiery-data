@@ -1,12 +1,17 @@
 
 /// <reference path="../node_modules/@types/mocha/index.d.ts" />
-/// <reference path="../node_modules/@types/chai/index.d.ts" />
+/// <reference path="../node_modules/@types/chai-as-promised/index.d.ts" />
 
 import $getFiery, { define, setGlobalOptions, getCacheForData } from '../src'
 import { FierySource, FieryChanges, FieryOptionsInput } from '../src/types'
 import { globalOptions } from '../src/options'
 import { getStore, getStored } from './util'
-import { expect, assert } from 'chai'
+import * as chai from 'chai'
+import * as chaiAsPromised from 'chai-as-promised'
+
+const expect = chai.expect;
+
+chai.use(chaiAsPromised)
 
 describe('operations', function()
 {
@@ -520,12 +525,13 @@ describe('operations', function()
 
     expect(pager).to.be.ok
 
-    if (pager) {
+    if (pager)
+    {
       expect(pager.hasNext()).to.be.true
       expect(pager.hasPrev()).to.be.false
       expect(pager.index).to.equal(0)
 
-      expect(pager.next()).to.be.true
+      expect(pager.next()).to.eventually.be.fulfilled
 
       expect(todos.length).to.equal(4)
       expect(todos.map(t => t.name)).to.deep.equal(['T6', 'T7', 'T8', 'T9'])
@@ -533,12 +539,12 @@ describe('operations', function()
       expect(pager.hasPrev()).to.be.true
       expect(pager.index).to.equal(1)
 
-      expect(pager.next()).to.be.true
+      expect(pager.next()).to.eventually.be.fulfilled
 
       expect(todos.length).to.equal(0)
       expect(pager.hasNext()).to.be.false
 
-      expect(pager.prev()).to.be.true
+      expect(pager.prev()).to.eventually.be.fulfilled
 
       expect(todos.length).to.equal(4)
       expect(todos.map(t => t.name)).to.deep.equal(['T6', 'T7', 'T8', 'T9'])
@@ -546,7 +552,7 @@ describe('operations', function()
       expect(pager.hasPrev()).to.be.true
       expect(pager.index).to.equal(1)
 
-      expect(pager.prev()).to.be.true
+      expect(pager.prev()).to.eventually.be.fulfilled
 
       expect(todos.length).to.equal(5)
       expect(todos.map(t => t.name)).to.deep.equal(['T1', 'T2', 'T3', 'T4', 'T5'])
@@ -554,7 +560,7 @@ describe('operations', function()
       expect(pager.hasPrev()).to.be.false
       expect(pager.index).to.equal(0)
 
-      expect(pager.prev()).to.be.false
+      expect(pager.prev()).to.eventually.be.rejected
 
       expect(todos.length).to.equal(5)
       expect(todos.map(t => t.name)).to.deep.equal(['T1', 'T2', 'T3', 'T4', 'T5'])

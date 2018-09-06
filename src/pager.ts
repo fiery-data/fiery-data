@@ -1,5 +1,5 @@
 
-import { FieryEntry, FieryPager } from './types'
+import { FieryEntry, FieryPager, FieryTarget } from './types'
 import { isArray, isObject } from './util'
 
 
@@ -47,7 +47,7 @@ export function getPager(entry: FieryEntry): FieryPager
       return this.hasQuery() && this.index > 0
     },
 
-    next(): boolean
+    next(): Promise<FieryTarget>
     {
       const { query, requery, last, first, off } = entry
 
@@ -63,13 +63,13 @@ export function getPager(entry: FieryEntry): FieryPager
 
         requery(query.startAfter(last))
 
-        return true
+        if (entry.promise) return entry.promise
       }
 
-      return false
+      return Promise.reject('The pager could not execute next')
     },
 
-    prev(): boolean
+    prev(): Promise<FieryTarget>
     {
       const { query, requery, first, off } = entry
 
@@ -94,10 +94,10 @@ export function getPager(entry: FieryEntry): FieryPager
           pointer = undefined
         }
 
-        return true
+        if (entry.promise) return entry.promise
       }
 
-      return false
+      return Promise.reject('The pager could not execute prev')
     }
   }
 

@@ -381,24 +381,24 @@ $fiery.destroy()
 // real-time documents
 var settings = $fiery(fs.collection('settings').doc('system'))
 
-var currentUser = $fiery(fs.collection('users').doc(USER_ID)) 
+var currentUser = $fiery(fs.collection('users').doc(USER_ID))
 ```
 
 ### Collections
 
 ```javascript
 // real-time array
-var cars = $fiery(fs.collection('cars')) 
+var cars = $fiery(fs.collection('cars'))
 
 // real-time map: carMap[id] = car
-var carMap = $fiery(fs.collection('cars'), {map: true}) 
+var carMap = $fiery(fs.collection('cars'), {map: true})
 ```
 
 ### Queries
 
 ```javascript
 // real-time array
-var currentCars = $fiery(fs.collection('cars'), { 
+var currentCars = $fiery(fs.collection('cars'), {
   query: cars => cars.where('make', '==', 'Honda')
 })
 
@@ -423,7 +423,7 @@ var cars2 = searchCars('Ford')
 function searchCars(make, limit)
 {
    var options = {
-      limit: limit, 
+      limit: limit,
       query: cars => cars.where(make, '==', make)
    }
    return $fiery(fs.collection('cars'), options, 'searchCars') // name (searchCars) is required when parameterized
@@ -432,7 +432,7 @@ function searchCars(make, limit)
 var cars = searchCars('Honda', 10) // 10 at a time
 var pager = $fiery.pager(cars)
 
-pager.next() // next 10 please
+pager.next() // next 10 please, returns a promise which resolves when they're fetched
 
 // pager.index // which page we're on
 // pager.hasNext() // typically returns true since we don't really know - unless cars is empty
@@ -451,7 +451,7 @@ pager.next() // next 10 please
 var cars = $fiery(fs.collection('cars'), {once: true})
 
 // current user populated once
-var currentUser = $fiery(fs.collection('users').doc(USER_ID), {once: true}), 
+var currentUser = $fiery(fs.collection('users').doc(USER_ID), {once: true}),
 ```
 
 ### Adding, updating, overwriting, removing
@@ -461,7 +461,7 @@ var currentUser = $fiery(fs.collection('users').doc(USER_ID), {}, 'currentUser')
 var todos = $fiery(fs.collection('todos'), {}, 'todos') // name required to get access to sources
 
 function addTodo() // COLLECTIONS STORED IN stores
-{ 
+{
   $fiery.sources.todos.add({
     name: 'Like fiery-data',
     done: true
@@ -473,28 +473,28 @@ function addTodo() // COLLECTIONS STORED IN stores
   })
 }
 
-function updateUser() 
+function updateUser()
 {
   $fiery.update(currentUser)
 }
-function updateUserEmailOnly() 
+function updateUserEmailOnly()
 {
  $fiery.update(currentUser, ['email'])
 }
 function updateAny(data) // any document can be passed, ex: this.todos[1], this.currentUser
-{ 
+{
   $fiery.update(data)
 }
 function overwrite(data) // only fields present on data will exist on sync
-{ 
+{
   $fiery.sync(data)
 }
-function remove(data) 
+function remove(data)
 {
   $fiery.remove(data) // removes sub collections as well
   $fiery.remove(data, true) // preserves sub collections
 }
-function removeName(todo) 
+function removeName(todo)
 {
   $fiery.clear(todo, 'name') // can also specify an array of props/sub collections
 }
@@ -516,7 +516,7 @@ var todos = $fiery(fs.collection('todos'), {
 
 // todos[todoIndex].children[childIndex]
 
-function addChild(parent) 
+function addChild(parent)
 {
   $fiery.ref(parent).collection('children').add( { /* values */ } )
   // OR

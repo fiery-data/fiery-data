@@ -159,8 +159,8 @@ export interface FieryPager {
     hasData(): boolean;
     hasNext(): boolean;
     hasPrev(): boolean;
-    next(): boolean;
-    prev(): boolean;
+    next(): Promise<FieryTarget>;
+    prev(): Promise<FieryTarget>;
 }
 export interface FieryEntry {
     name?: string;
