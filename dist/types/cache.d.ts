@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import { FieryInstance, FieryEntry, FieryCacheEntry, FieryCache, FieryData } from './types';
-export declare const globalCache: FieryCache;
+export declare let globalCache: FieryCache;
+export declare function destroyGlobalCache(): void;
 export declare function getCacheForReference(entry: FieryEntry, ref: firebase.firestore.DocumentReference, checkSubs?: boolean): FieryCacheEntry;
 export declare function getCacheForDocument(entry: FieryEntry, doc: firebase.firestore.DocumentSnapshot, checkSubs?: boolean): FieryCacheEntry;
 export declare function getCacheForData(data: FieryData): FieryCacheEntry | undefined;

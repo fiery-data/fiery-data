@@ -12,8 +12,13 @@ import { callbacks } from './callbacks'
 
 
 
-export const globalCache: FieryCache = { }
+export let globalCache: FieryCache = Object.create(null)
 
+
+export function destroyGlobalCache()
+{
+  globalCache = Object.create(null)
+}
 
 export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore.DocumentReference, checkSubs: boolean = false): FieryCacheEntry
 {
