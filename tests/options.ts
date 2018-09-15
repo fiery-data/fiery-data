@@ -214,4 +214,185 @@ describe('options', function()
     $fiery.destroy()
   })
 
+  it('events', function()
+  {
+    const fs = getStore('options events', {
+      'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null },
+      'tasks/2': { name: 'T2', done: true, done_at: 123, done_by: 456 }
+    })
+
+    const context: any = {}
+
+    const $fiery = $getFiery()
+
+    const counters = { remove: 0, missing: 0, create: 0, destroy: 0, update: 0 }
+
+    class Task {
+      name: string
+      done: boolean
+      done_at: number
+      done_by: number
+      exists: boolean
+      $onRemove() {
+        counters.remove++
+      }
+      $onMissing() {
+        counters.missing++
+      }
+      $onCreate() {
+        counters.create++
+      }
+      $onDestroy() {
+        counters.destroy++
+      }
+      $onUpdate() {
+        counters.update++
+      }
+    }
+
+    const options = {
+      type: Task,
+      propExists: 'exists',
+      events: true
+    }
+
+    const tasks: Task[] = $fiery(fs.collection('tasks'), options, 'task')
+
+    expect(tasks.length).to.equal(2)
+    expect(counters).to.deep.equal({remove: 0, missing: 0, create: 2, destroy: 0, update: 2})
+
+    fs.doc('tasks/1').update({name: 'T1a'})
+
+    expect(tasks[0].name).to.equal('T1a')
+    expect(counters).to.deep.equal({remove: 0, missing: 0, create: 2, destroy: 0, update: 3})
+
+    fs.doc('tasks/2').delete()
+
+    expect(tasks.length).to.equal(1)
+    expect(counters).to.deep.equal({remove: 1, missing: 0, create: 2, destroy: 1, update: 3})
+
+    fs.collection('tasks').add({
+      name: 'T3',
+      done: false
+    })
+
+    expect(tasks.length).to.equal(2)
+    expect(counters).to.deep.equal({remove: 1, missing: 0, create: 3, destroy: 1, update: 4})
+
+    const task4: Task = $fiery(fs.doc('tasks/4'), options, 'task4')
+
+    expect(task4).to.be.ok
+    expect(task4.exists).to.be.false
+    expect(tasks.length).to.equal(2)
+    expect(counters).to.deep.equal({remove: 1, missing: 1, create: 4, destroy: 1, update: 4})
+
+    task4.name = 'T4'
+    task4.done = false
+
+    return $fiery.save(task4).then(() =>
+    {
+      expect(task4.exists).to.be.true
+      expect(tasks.length).to.equal(3)
+      expect(counters).to.deep.equal({remove: 1, missing: 1, create: 4, destroy: 1, update: 6})
+
+      $fiery.destroy()
+
+      expect(counters).to.deep.equal({remove: 1, missing: 1, create: 4, destroy: 4, update: 6})
+    })
+  })
+
+  it('events override', function()
+  {
+    const fs = getStore('options events override', {
+      'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null },
+      'tasks/2': { name: 'T2', done: true, done_at: 123, done_by: 456 }
+    })
+
+    const context: any = {}
+
+    const $fiery = $getFiery()
+
+    const counters = { remove: 0, missing: 0, create: 0, destroy: 0, update: 0 }
+
+    class Task {
+      name: string
+      done: boolean
+      done_at: number
+      done_by: number
+      exists: boolean
+      removed() {
+        counters.remove++
+      }
+      missing() {
+        counters.missing++
+      }
+      init() {
+        counters.create++
+      }
+      destroy() {
+        counters.destroy++
+      }
+      updated() {
+        counters.update++
+      }
+    }
+
+    const options = {
+      type: Task,
+      propExists: 'exists',
+      events: true,
+      eventsOptions: {
+        remove: 'removed',
+        missing: 'missing',
+        create: 'init',
+        destroy: 'destroy',
+        update: 'updated'
+      }
+    }
+
+    const tasks: Task[] = $fiery(fs.collection('tasks'), options, 'task')
+
+    expect(tasks.length).to.equal(2)
+    expect(counters).to.deep.equal({remove: 0, missing: 0, create: 2, destroy: 0, update: 2})
+
+    fs.doc('tasks/1').update({name: 'T1a'})
+
+    expect(tasks[0].name).to.equal('T1a')
+    expect(counters).to.deep.equal({remove: 0, missing: 0, create: 2, destroy: 0, update: 3})
+
+    fs.doc('tasks/2').delete()
+
+    expect(tasks.length).to.equal(1)
+    expect(counters).to.deep.equal({remove: 1, missing: 0, create: 2, destroy: 1, update: 3})
+
+    fs.collection('tasks').add({
+      name: 'T3',
+      done: false
+    })
+
+    expect(tasks.length).to.equal(2)
+    expect(counters).to.deep.equal({remove: 1, missing: 0, create: 3, destroy: 1, update: 4})
+
+    const task4: Task = $fiery(fs.doc('tasks/4'), options, 'task4')
+
+    expect(task4).to.be.ok
+    expect(task4.exists).to.be.false
+    expect(tasks.length).to.equal(2)
+    expect(counters).to.deep.equal({remove: 1, missing: 1, create: 4, destroy: 1, update: 4})
+
+    task4.name = 'T4'
+    task4.done = false
+
+    return $fiery.save(task4).then(() =>
+    {
+      expect(task4.exists).to.be.true
+      expect(tasks.length).to.equal(3)
+      expect(counters).to.deep.equal({remove: 1, missing: 1, create: 4, destroy: 1, update: 6})
+
+      $fiery.destroy()
+
+      expect(counters).to.deep.equal({remove: 1, missing: 1, create: 4, destroy: 4, update: 6})
+    })
+  })
+
 })

@@ -29,6 +29,7 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 - Adding the key and exists to the document [example](#adding-key-and-exists-to-object)
 - Sharing, extending, defining, and global options [example](#sharing-extending-defining-and-global-options)
 - Callbacks (error, success, missing, remove) [example](#callbacks)
+- Events (update, remove, create, destroy, missing) [example](#events)
 - Custom binding / unbinding [example](#binding-and-unbinding)
 
 ### Related
@@ -711,6 +712,50 @@ var todos = $fiery(fs.collection('todos'), {
   onError: (reason) => {}, // there was an error getting collection or document
   onRemove: () => {}, // document was removed
   onMissing: () => {} // document does not exist yet
+})
+```
+
+### Events
+```javascript
+function Task() {}
+Task.prototype = {
+  $onUpdate: function() {
+    // I've been updated
+  },
+  $onRemove: function() {
+    // I've been removed from the firestore
+  },
+  $onCreate: function() {
+    // This instance has been created (runs after constructor if one is given)
+  },
+  $onDestroy: function() {
+    // This instance is being recycled. It may still exist in the firestore, but
+    // it no longer is referenced by the app
+  },
+  $onMissing: function() {
+    // This document was attempted to retrieved, but it doesn't exist yet
+  }
+}
+
+var tasks = $fiery(fs.collection('tasks'), {
+  type: Task,
+  events: true
+})
+```
+
+Or you can specify the names of the functions:
+
+```javascript
+var tasks = $fiery(fs.collection('tasks'), {
+  type: Task,
+  events: true,
+  eventsOptions: {
+    update: 'onUpdate',
+    remove: 'onRemove',
+    create: 'init',
+    destroy: 'destroy',
+    missing: 'oops'
+  }
 })
 ```
 

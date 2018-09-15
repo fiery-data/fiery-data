@@ -90,11 +90,20 @@ export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry,
 
   if (!doc.exists)
   {
-    callbacks.onDocumentMissing(cache.data, entry)
-
     if (options.propExists)
     {
       system.setProperty(cache.data, options.propExists, false)
+    }
+
+    if (cache.exists === null)
+    {
+      callbacks.onDocumentMissing(cache.data, entry)
+
+      options.triggerEvent(cache.data, 'missing')
+    }
+    else
+    {      
+      options.triggerEvent(cache.data, 'remove')
     }
 
     cache.exists = false

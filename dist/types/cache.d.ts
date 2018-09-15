@@ -10,7 +10,7 @@ export declare function removeCacheFromEntry(entry: FieryEntry, cache?: FieryCac
 export declare function isReferencedSub(cache: FieryCacheEntry, sub: string): boolean;
 export declare function addCacheToEntry(cache: FieryCacheEntry, entry: FieryEntry, checkSubs?: boolean): void;
 export declare function removeCacheFromInstance(cache: FieryCacheEntry, instance: FieryInstance, checkForDestroy?: boolean): void;
-export declare function destroyCache(cache: FieryCacheEntry): void;
+export declare function destroyCache(cache: FieryCacheEntry, force?: boolean): void;
 export declare function addSubs(cache: FieryCacheEntry, entry: FieryEntry): void;
 export declare function hasLiveSub(cache: FieryCacheEntry, sub: string): boolean;
 export declare function createRecord(data: FieryData, entry: FieryEntry): FieryData;

@@ -33,6 +33,7 @@ export type FieryFields = string | string[]
 
 export type FieryCache = { [uid: string]: FieryCacheEntry }
 
+export type FieryEvents = 'create' | 'missing' | 'update' | 'remove' | 'destroy'
 
 
 export interface FierySystem
@@ -115,6 +116,19 @@ export interface FieryOptions
     getChanges?: string
     [unspecified: string]: any
   }
+
+  events?: boolean
+
+  eventsOptions:
+  {
+    create?: string
+    missing?: string
+    update?: string
+    remove?: string
+    destroy?: string
+  }
+
+  triggerEvent: (data: FieryData, event: FieryEvents) => void
 
   exclude: FieryExclusions | string[]
 
@@ -233,7 +247,7 @@ export type FieryRecordUpdate = (fields?: FieryFields) => Promise<void>
 
 export type FieryRecordSave = (fields?: FieryFields) => Promise<void>
 
-export type FieryRecordRemove = (excludeSubs: boolean) => Promise<void>
+export type FieryRecordRemove = (excludeSubs?: boolean) => Promise<void>
 
 export type FieryRecordRef = (sub?: string) => FierySource
 
@@ -338,7 +352,7 @@ export interface FieryCacheEntry
 
   uid: string
 
-  exists: boolean
+  exists: boolean | null
 
   data: FieryData
 

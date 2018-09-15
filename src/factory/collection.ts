@@ -169,6 +169,9 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
               }
 
               cache.exists = false
+
+              options.triggerEvent(cache.data, 'remove')
+
               destroyCache(cache)
             }
             break

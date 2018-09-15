@@ -1,6 +1,6 @@
 
-import { PROP_UID, PROP_VALUE, RECORD_OPTIONS } from './constants'
-import { FieryOptionsInput, FieryTarget, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FierySource, FieryData, FieryMap, FieryEquality, FieryMergeStrategy, FieryMergeStrategies } from './types'
+import { PROP_UID, PROP_VALUE, RECORD_OPTIONS, EVENTS_OPTIONS } from './constants'
+import { FieryOptionsInput, FieryTarget, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FierySource, FieryData, FieryMap, FieryEquality, FieryMergeStrategy, FieryMergeStrategies, FieryEvents } from './types'
 import { parseDate, isObject, isFunction, isArray, coalesce, forEach, isDefined, isString } from './util'
 import * as operations from './operations'
 
@@ -32,7 +32,19 @@ export const globalOptions =
 
     recordOptions: RECORD_OPTIONS,
 
-    newDocument: (encoded?: FieryData) => ({} as FieryData)
+    newDocument: (encoded?: FieryData) => ({} as FieryData),
+
+    eventsOptions: EVENTS_OPTIONS,
+
+    triggerEvent (this: FieryOptions, data: FieryData, event: FieryEvents)
+    {
+      const handler = this.eventsOptions[event]
+
+      if (this.events && handler && data[handler])
+      {
+        data[handler]()
+      }
+    }
 
   } as Partial<FieryOptions>,
 
@@ -302,6 +314,9 @@ export const mergeOptions: FieryMergeStrategies =
   record:             mergeStrategy.replace,
   recordOptions:      mergeStrategy.replace,
   recordFunctions:    mergeStrategy.replace,
+  events:             mergeStrategy.replace,
+  eventsOptions:      mergeStrategy.replace,
+  triggerEvent:       mergeStrategy.replace,
   propValue:          mergeStrategy.replace,
   propExists:         mergeStrategy.replace,
   propParent:         mergeStrategy.replace,

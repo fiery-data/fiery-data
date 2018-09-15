@@ -17,7 +17,10 @@ export let globalCache: FieryCache = Object.create(null)
 
 export function destroyGlobalCache()
 {
-  globalCache = Object.create(null)
+  for (const uid in globalCache)
+  {
+    destroyCache(globalCache[uid], true)
+  }
 }
 
 export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore.DocumentReference, checkSubs: boolean = false): FieryCacheEntry
@@ -39,7 +42,7 @@ export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore
     uid,
     data,
     ref,
-    exists: false,
+    exists: null,
     uses: 0,
     sub: {},
     firstEntry: entry,
@@ -53,6 +56,8 @@ export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore
   createRecord(data, entry)
 
   callbacks.onCacheCreate(cache)
+
+  entry.options.triggerEvent(data, 'create')
 
   return cache
 }
@@ -190,7 +195,7 @@ export function removeCacheFromInstance (cache: FieryCacheEntry, instance: Fiery
   }
 }
 
-export function destroyCache (cache: FieryCacheEntry): void
+export function destroyCache (cache: FieryCacheEntry, force: boolean = false): void
 {
   const entries: FieryEntry[] = cache.entries
 
@@ -208,11 +213,14 @@ export function destroyCache (cache: FieryCacheEntry): void
   {
     callbacks.onCacheDestroy(cache)
 
+    cache.firstEntry.options.triggerEvent(cache.data, 'destroy')
+
     delete globalCache[cache.uid]
     delete cache.ref
     delete cache.sub
     delete cache.data
 
+    cache.uses = 0
     cache.entries.length = 0
     cache.removed = true
   }

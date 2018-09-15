@@ -30,6 +30,8 @@ export function refreshData (cache: FieryCacheEntry, doc: firebase.firestore.Doc
 
   cache.exists = doc.exists
 
+  options.triggerEvent(data, 'update')
+
   return data;
 }
 

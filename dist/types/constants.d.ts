@@ -15,3 +15,10 @@ export declare const RECORD_OPTIONS: {
     create: string;
     getChanges: string;
 };
+export declare const EVENTS_OPTIONS: {
+    create: string;
+    missing: string;
+    update: string;
+    remove: string;
+    destroy: string;
+};

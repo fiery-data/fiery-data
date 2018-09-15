@@ -34,6 +34,7 @@ export declare type FieryFields = string | string[];
 export declare type FieryCache = {
     [uid: string]: FieryCacheEntry;
 };
+export declare type FieryEvents = 'create' | 'missing' | 'update' | 'remove' | 'destroy';
 export interface FierySystem {
     removeNamed: (name: string) => any;
     setProperty: (target: any, property: string, value: any) => any;
@@ -83,6 +84,15 @@ export interface FieryOptions {
         getChanges?: string;
         [unspecified: string]: any;
     };
+    events?: boolean;
+    eventsOptions: {
+        create?: string;
+        missing?: string;
+        update?: string;
+        remove?: string;
+        destroy?: string;
+    };
+    triggerEvent: (data: FieryData, event: FieryEvents) => void;
     exclude: FieryExclusions | string[];
     include: string[];
     parent?: FieryOptions;
@@ -142,7 +152,7 @@ export declare type FieryRecordRefresh = (cachedOnly?: boolean) => Promise<void>
 export declare type FieryRecordSync = (fields?: FieryFields) => Promise<void>;
 export declare type FieryRecordUpdate = (fields?: FieryFields) => Promise<void>;
 export declare type FieryRecordSave = (fields?: FieryFields) => Promise<void>;
-export declare type FieryRecordRemove = (excludeSubs: boolean) => Promise<void>;
+export declare type FieryRecordRemove = (excludeSubs?: boolean) => Promise<void>;
 export declare type FieryRecordRef = (sub?: string) => FierySource;
 export declare type FieryRecordClear = (props: FieryFields) => Promise<void[]>;
 export declare type FieryRecordCreate = <T extends FieryData>(sub: string, initial?: FieryData) => T;
@@ -197,7 +207,7 @@ export interface FieryEntry {
 }
 export interface FieryCacheEntry {
     uid: string;
-    exists: boolean;
+    exists: boolean | null;
     data: FieryData;
     ref: firebase.firestore.DocumentReference;
     uses: number;

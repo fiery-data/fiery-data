@@ -1,9 +1,14 @@
 
 export const PROP_VALUE = '.value'
+
 export const PROP_UID = '.uid'
+
 export const UID_SEPARATOR = '///'
+
 export const ENTRY_SEPARATOR = '/'
+
 export const PATH_SEPARATOR = '/'
+
 export const RECORD_OPTIONS = {
   refresh: '$refresh',
   sync: '$sync',
@@ -15,4 +20,12 @@ export const RECORD_OPTIONS = {
   build: '$build',
   create: '$create',
   getChanges: '$getChanges'
+}
+
+export const EVENTS_OPTIONS = {
+  create: '$onCreate',
+  missing: '$onMissing',
+  update: '$onUpdate',
+  remove: '$onRemove',
+  destroy: '$onDestroy'
 }
