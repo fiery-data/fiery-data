@@ -39,9 +39,11 @@ export interface FierySystem {
     removeNamed: (name: string) => any;
     setProperty: (target: any, property: string, value: any) => any;
     removeProperty: (target: any, property: string) => any;
-    arraySet: (target: any[], index: number, value: any) => any;
+    arrayRemove: (target: any[], index: number) => any;
+    arrayInsert: (target: any[], index: number, value: any) => any;
+    arrayMove: (target: any[], from: number, to: number, value: any) => any;
     arrayAdd: (target: any[], value: any) => any;
-    arrayResize: (target: any[], size: number) => any;
+    arrayClear: (target: any[]) => any;
 }
 export interface FieryOptions {
     extends?: FieryOptionsInput;

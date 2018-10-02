@@ -155,13 +155,20 @@ const defaultSystem: FierySystem = {
   removeProperty: (target: any, property: string) => {
     delete target[property]
   },
-  arraySet: (target: any[], index: number, value: any) => {
-    target[index] = value
+  arrayRemove: (target: any[], index: number) => {
+    target.splice(index, 1)
+  },
+  arrayInsert: (target: any[], index: number, value: any) => {
+    target.splice(index, 0, value)
+  },
+  arrayMove: (target: any[], from: number, to: number, value: any) => {
+    target.splice(from, 1)
+    target.splice(to, 0, value)
   },
   arrayAdd: (target: any[], value: any) => {
     target.push(value)
   },
-  arrayResize: (target: any[], size: number) => {
-    target.length = size
+  arrayClear: (target: any[]) => {
+    target.splice(0, target.length)
   }
 }

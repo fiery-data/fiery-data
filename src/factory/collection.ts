@@ -91,23 +91,23 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
 
     options.onMutate(() =>
     {
-        system.arrayResize(target, 0)
+      system.arrayClear(target)
 
-        querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
-        {
-          const cache: FieryCacheEntry = getCacheForDocument(entry, doc, true)
+      querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
+      {
+        const cache: FieryCacheEntry = getCacheForDocument(entry, doc, true)
 
-          refreshData(cache, doc, entry)
+        refreshData(cache, doc, entry)
 
-          system.arrayAdd(target, cache.data)
+        system.arrayAdd(target, cache.data)
 
-          delete missing[cache.uid]
+        delete missing[cache.uid]
 
-          callbacks.onCollectionAdd(cache.data, target, entry)
+        callbacks.onCollectionAdd(cache.data, target, entry)
 
-        }, options.onError)
+      }, options.onError)
 
-        return target
+      return target
     })
 
     forEach(missing, data =>
@@ -149,12 +149,14 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
         {
           case 'added':
             const created: FieryData = refreshData(cache, doc, entry)
-            system.arraySet(target, change.newIndex, created)
+            system.arrayInsert(target, change.newIndex, created)
 
             callbacks.onCollectionAdd(created, target, entry)
             break
 
           case 'removed':
+            system.arrayRemove(target, change.oldIndex)
+
             callbacks.onCollectionRemove(cache.data, target, entry)
 
             if (doc.exists)
@@ -181,15 +183,13 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
 
             if (change.oldIndex !== change.newIndex)
             {
-              system.arraySet(target, change.newIndex, updated)
+              system.arrayMove(target, change.oldIndex, change.newIndex, updated)
             }
 
             callbacks.onCollectionModify(updated, target, entry)
             break
         }
       }, options.onError)
-
-      system.arrayResize(target, querySnapshot.size)
 
       return target
     })
