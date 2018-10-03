@@ -26,7 +26,7 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 - Add active record methods (sync, update, remove, clear, getChanges) [example](#active-record)
 - Control over what properties are sent on save [example](#save-fields)
 - Encode & decode properties [example](#encode--decode-properties)
-- Timestamp/Date properties [example](#timestamp--date-properties)
+- Timestamp/Date properties [example](#timestampdate-properties)
 - Adding the key and exists to the document [example](#adding-key-and-exists-to-object)
 - Sharing, extending, defining, and global options [example](#sharing-extending-defining-and-global-options)
 - Callbacks (error, success, missing, remove) [example](#callbacks)
