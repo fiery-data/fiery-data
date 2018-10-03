@@ -52,7 +52,7 @@ export interface FierySystem
 
   arrayAdd: (target: any[], value: any) => any
 
-  arrayClear: (target: any[]) => any
+  arrayResize: (target: any[], size: number) => any
 }
 
 export interface FieryOptions

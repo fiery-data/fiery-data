@@ -91,7 +91,7 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
 
     options.onMutate(() =>
     {
-      system.arrayClear(target)
+      system.arrayResize(target, 0)
 
       querySnapshot.forEach((doc: firebase.firestore.DocumentSnapshot) =>
       {
@@ -190,6 +190,8 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
             break
         }
       }, options.onError)
+
+      system.arrayResize(target, querySnapshot.size)
 
       return target
     })

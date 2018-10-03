@@ -43,7 +43,7 @@ export interface FierySystem {
     arrayInsert: (target: any[], index: number, value: any) => any;
     arrayMove: (target: any[], from: number, to: number, value: any) => any;
     arrayAdd: (target: any[], value: any) => any;
-    arrayClear: (target: any[]) => any;
+    arrayResize: (target: any[], size: number) => any;
 }
 export interface FieryOptions {
     extends?: FieryOptionsInput;

@@ -168,7 +168,9 @@ const defaultSystem: FierySystem = {
   arrayAdd: (target: any[], value: any) => {
     target.push(value)
   },
-  arrayClear: (target: any[]) => {
-    target.splice(0, target.length)
+  arrayResize: (target: any[], size: number) => {
+    if (target.length > size) {
+      target.splice(size, target.length - size)
+    }
   }
 }
