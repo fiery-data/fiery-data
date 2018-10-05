@@ -65,9 +65,9 @@ Installation via npm : `npm install fiery-data --save`
 var app = firebase.initializeApp({ /* firebase options */ })
 var fs = firebase.firestore(app)
 
-// VueFiery is available through UMD
+// FieryData is available through UMD
 // factory for creating and destroying live data
-var $fiery = VueFiery()
+var $fiery = FieryData()
 
 // get a single document
 var specificTask = $fiery(fs.doc('tasks/1'))
