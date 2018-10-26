@@ -78,6 +78,12 @@ export interface FieryOptions
 
   once?: boolean
 
+  stream?: boolean
+
+  streamInitial?: number
+
+  streamMore?: number
+
   nullifyMissing?: boolean
 
   type?: { new (): FieryData }
@@ -198,6 +204,8 @@ export interface FieryInstance
   linkSources: (container: any) => void
 
   pager: (target: string | FieryTarget) => FieryPager | null
+
+  more: (target: string | FieryTarget, count?: number) => Promise<void>
 
   refresh: (data: FieryData, cachedOnly?: boolean) => Promise<void>
 
@@ -338,6 +346,8 @@ export interface FieryEntry
   query?: firebase.firestore.Query
 
   requery?: (query: firebase.firestore.Query) => void
+
+  more?: (count?: number) => Promise<void>
 
   pager?: FieryPager
 

@@ -1,3 +1,10 @@
-import { FieryEntry, FieryMap } from '../types';
+import * as firebase from 'firebase';
+import { FieryEntry, FieryTarget, FieryMap } from '../types';
+export declare type OnSnapshot = (querySnapshot: firebase.firestore.QuerySnapshot) => any;
+export declare type OnResolve = (target: FieryTarget) => any;
+export declare type OnReject = (reason: any) => any;
 declare function factory(entry: FieryEntry): FieryMap;
+export declare function getInitialHandler(entry: FieryEntry): OnSnapshot;
+export declare function getUpdateHandler(entry: FieryEntry): OnSnapshot;
+export declare function getLiveHandler(entry: FieryEntry, handleInitial: OnSnapshot, resolve: OnResolve): OnSnapshot;
 export default factory;

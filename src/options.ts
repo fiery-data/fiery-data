@@ -26,6 +26,10 @@ export const globalOptions =
       mutate()
     },
 
+    streamInitial: 20,
+
+    streamMore: 10,
+
     liveOptions: {},
 
     propValue: PROP_VALUE,
@@ -304,6 +308,9 @@ export const mergeOptions: FieryMergeStrategies =
   query:              mergeStrategy.replace,
   map:                mergeStrategy.replace,
   once:               mergeStrategy.replace,
+  stream:             mergeStrategy.replace,
+  streamInitial:      mergeStrategy.replace,
+  streamMore:         mergeStrategy.replace,
   type:               mergeStrategy.replace,
   nullifyMissing:     mergeStrategy.replace,
   newDocument:        mergeStrategy.replace,

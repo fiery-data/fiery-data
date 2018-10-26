@@ -13,9 +13,9 @@ import { callbacks } from '../callbacks'
 
 
 
-type OnSnapshot = (querySnapshot: firebase.firestore.QuerySnapshot) => any
-type OnResolve = (target: FieryTarget) => any
-type OnReject = (reason: any) => any
+export type OnSnapshot = (querySnapshot: firebase.firestore.QuerySnapshot) => any
+export type OnResolve = (target: FieryTarget) => any
+export type OnReject = (reason: any) => any
 
 
 export function factory (entry: FieryEntry): FieryData[]
@@ -56,7 +56,7 @@ export function factory (entry: FieryEntry): FieryData[]
       entry.off = query.onSnapshot(
         options.liveOptions,
         getLiveHandler(entry, initial, resolve),
-        (reason) => {
+        (reason: any) => {
           reject(reason)
           options.onError(reason)
         }
@@ -69,7 +69,7 @@ export function factory (entry: FieryEntry): FieryData[]
   return entry.target as FieryData[]
 }
 
-function getInitialHandler (entry: FieryEntry): OnSnapshot
+export function getInitialHandler (entry: FieryEntry): OnSnapshot
 {
   const options: FieryOptions = entry.options
   const system: FierySystem = entry.instance.system
@@ -127,7 +127,7 @@ function getInitialHandler (entry: FieryEntry): OnSnapshot
   }
 }
 
-function getUpdateHandler (entry: FieryEntry): OnSnapshot
+export function getUpdateHandler (entry: FieryEntry): OnSnapshot
 {
   const options: FieryOptions = entry.options
   const system: FierySystem = entry.instance.system
@@ -204,7 +204,7 @@ function getUpdateHandler (entry: FieryEntry): OnSnapshot
   }
 }
 
-function getLiveHandler (entry: FieryEntry, handleInitial: OnSnapshot, resolve: OnResolve): OnSnapshot
+export function getLiveHandler (entry: FieryEntry, handleInitial: OnSnapshot, resolve: OnResolve): OnSnapshot
 {
   const handleUpdate: OnSnapshot = getUpdateHandler(entry)
   let handler: OnSnapshot = handleInitial

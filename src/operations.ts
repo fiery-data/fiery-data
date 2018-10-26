@@ -13,7 +13,7 @@ import { getPager } from './pager'
 
 
 
-export function pager (this: FieryInstance, target: FieryTarget): FieryPager | null
+export function pager (this: FieryInstance, target: string | FieryTarget): FieryPager | null
 {
   const entry = this.entryFor(target)
 
@@ -21,6 +21,17 @@ export function pager (this: FieryInstance, target: FieryTarget): FieryPager | n
     ? (entry.pager ? entry.pager : entry.pager = getPager(entry))
     : null
 }
+
+
+export function more (this: FieryInstance, target: string | FieryTarget, count?: number): Promise<void>
+{
+  const entry = this.entryFor(target)
+
+  return entry
+    ? (entry.more ? entry.more(count) : Promise.reject(undefined))
+    : Promise.reject(undefined)
+}
+
 
 export function refresh (this: FieryInstance, data: FieryData, cachedOnly: boolean = false): Promise<void>
 {

@@ -56,6 +56,9 @@ export interface FieryOptions {
     doc?: boolean;
     ref?: boolean;
     once?: boolean;
+    stream?: boolean;
+    streamInitial?: number;
+    streamMore?: number;
     nullifyMissing?: boolean;
     type?: {
         new (): FieryData;
@@ -129,6 +132,7 @@ export interface FieryInstance {
     free: (target: FieryTarget) => void;
     linkSources: (container: any) => void;
     pager: (target: string | FieryTarget) => FieryPager | null;
+    more: (target: string | FieryTarget, count?: number) => Promise<void>;
     refresh: (data: FieryData, cachedOnly?: boolean) => Promise<void>;
     update: (data: FieryData, fields?: FieryFields) => Promise<void>;
     save: (data: FieryData, fields?: FieryFields) => Promise<void>;
@@ -201,6 +205,7 @@ export interface FieryEntry {
     first?: firebase.firestore.DocumentSnapshot;
     query?: firebase.firestore.Query;
     requery?: (query: firebase.firestore.Query) => void;
+    more?: (count?: number) => Promise<void>;
     pager?: FieryPager;
     off?: () => any;
     id?: number;

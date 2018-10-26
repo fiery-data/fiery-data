@@ -68,7 +68,7 @@ export function factory (entry: FieryEntry): FieryData
     entry.off = source.onSnapshot(
       options.liveOptions,
       onSnapshot,
-      (reason) => {
+      (reason: any) => {
         reject(reason)
         options.onError(reason)
       }
@@ -102,7 +102,7 @@ export function handleDocumentUpdate (cache: FieryCacheEntry, entry: FieryEntry,
       options.triggerEvent(cache.data, 'missing')
     }
     else
-    {      
+    {
       options.triggerEvent(cache.data, 'remove')
     }
 

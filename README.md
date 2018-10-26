@@ -18,6 +18,7 @@ A library which binds Firestore data to plain arrays and objects and keeps them 
 - Documents [example](#documents)
 - Collections (stored as array or map) [example](#collections)
 - Queries (stored as array or map) [example](#queries)
+- Streams (stored as array or map) [example](#streams)
 - Pagination [example](#pagination)
 - Real-time or once [example](#real-time-or-once)
 - Adding, updating, sync, removing, remove field [example](#adding-updating-overwriting-removing)
@@ -417,6 +418,35 @@ var cars1 = searchCars('Honda')
 var cars2 = searchCars('Ford')
 
 // cars1 === cars2, same array. Using the name ensures one query is no longer listened to - and only the most recent one
+```
+
+### Streams
+
+A stream is an ordered collection of documents where the first N are fetched, and any newly created/updated documents that should be placed in the collection
+are added. You can look back further in the stream using `more`. A use case for
+streams are a message channel. When the stream is first loaded N documents are
+read. As new messages are created they are added to the beginning of the collection. If the user wishes to see older messages they simply have to call
+`more` on the stream to load M more.
+
+You MUST have an orderBy clause on the query option and `stream` must be `true`.
+
+```javascript
+// streams are always real-time, but can be an array or map
+var messages = $fiery(
+  fs.collection('messages'), {
+  query: q => q.orderBy('created_at', 'desc'),
+  stream: true,
+  streamInitial: 25, // initial number of documents to load
+  streamMore: 10 // documents to load when more is called without a count
+})
+
+// 25 are loaded (if that many exist)
+
+// load 10 more
+$fiery.more(messages)
+
+// load 20 more
+$fiery.more(messages, 20)
 ```
 
 ### Pagination
