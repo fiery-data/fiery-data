@@ -119,6 +119,8 @@ function startStream (entry: FieryEntry, initial: OnSnapshot, query: firebase.fi
       options.onError(reason)
     }
   )
+
+  options.onPromise(entry.promise)
 }
 
 export default factory

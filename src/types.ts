@@ -170,6 +170,8 @@ export interface FieryOptions
   onRemove: () => any
 
   onMutate: (mutate: () => FieryTarget) => void
+
+  onPromise: (promise: Promise<FieryTarget>) => void
 }
 
 export interface FieryInstance

@@ -75,6 +75,8 @@ export function factory (entry: FieryEntry): FieryData
     )
   }
 
+  options.onPromise(entry.promise)
+
   if (missingSynchronously && options.nullifyMissing)
   {
     return (<any>null) as FieryData

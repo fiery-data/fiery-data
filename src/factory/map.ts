@@ -3,7 +3,6 @@ import * as firebase from 'firebase'
 
 
 
-import { PROP_UID } from '../constants'
 import { FierySystem, FieryEntry, FieryTarget, FieryData, FieryOptions, FieryMap, FieryCacheEntry } from '../types'
 import { forEach } from '../util'
 import { refreshData } from '../data'
@@ -64,6 +63,8 @@ function factory (entry: FieryEntry): FieryMap
         }
       )
     }
+
+    options.onPromise(entry.promise)
   }
 
   entry.requery(entry.query = query)

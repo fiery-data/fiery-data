@@ -62,6 +62,8 @@ export function factory (entry: FieryEntry): FieryData[]
         }
       )
     }
+
+    options.onPromise(entry.promise)
   }
 
   entry.requery(entry.query = query)

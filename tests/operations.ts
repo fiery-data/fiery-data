@@ -571,4 +571,77 @@ describe('operations', function()
 
   })
 
+  // https://github.com/fiery-data/fiery-vue/issues/6
+  it('pager (#6)', function() {
+
+    const fs = getStore('operations pager (#6)', {
+      'todos/1': { name: 'T1', order: 1 },
+      'todos/2': { name: 'T2', order: 2 },
+      'todos/3': { name: 'T3', order: 3 },
+      'todos/4': { name: 'T4', order: 4 },
+      'todos/5': { name: 'T5', order: 5 },
+      'todos/6': { name: 'T6', order: 6 },
+      'todos/7': { name: 'T7', order: 7 },
+      'todos/8': { name: 'T8', order: 8 },
+      'todos/9': { name: 'T9', order: 9 }
+    })
+
+    const $fiery = $getFiery()
+
+    const options: FieryOptionsInput = {
+      extends: 'todo',
+      query: q => q.orderBy('order').limit(1)
+    }
+
+    const todos: any[] = $fiery(fs.collection('todos'), options, 'todos')
+
+    expect(todos).to.be.ok
+    expect(todos.length).to.equal(1)
+    expect(todos.map(t => t.name)).to.deep.equal(['T1'])
+
+    const pager = $fiery.pager(todos)
+
+    expect(pager).to.be.ok
+
+    if (pager)
+    {
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.false
+      expect(pager.index).to.equal(0)
+
+      expect(pager.next()).to.eventually.be.fulfilled
+
+      expect(todos.length).to.equal(1)
+      expect(todos.map(t => t.name)).to.deep.equal(['T2'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.true
+      expect(pager.index).to.equal(1)
+
+      expect(pager.next()).to.eventually.be.fulfilled
+
+      expect(todos.length).to.equal(1)
+      expect(todos.map(t => t.name)).to.deep.equal(['T3'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.true
+      expect(pager.index).to.equal(2)
+
+      expect(pager.prev()).to.eventually.be.fulfilled
+
+      expect(todos.length).to.equal(1)
+      expect(todos.map(t => t.name)).to.deep.equal(['T2'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.true
+      expect(pager.index).to.equal(1)
+
+      expect(pager.prev()).to.eventually.be.fulfilled
+
+      expect(todos.length).to.equal(1)
+      expect(todos.map(t => t.name)).to.deep.equal(['T1'])
+      expect(pager.hasNext()).to.be.true
+      expect(pager.hasPrev()).to.be.false
+      expect(pager.index).to.equal(0)
+    }
+
+  })
+
 })

@@ -26,6 +26,8 @@ export const globalOptions =
       mutate()
     },
 
+    onPromise: (promise: Promise<FieryTarget>) => {},
+
     streamInitial: 20,
 
     streamMore: 10,
@@ -337,5 +339,6 @@ export const mergeOptions: FieryMergeStrategies =
   onMissing:          mergeStrategy.replace,
   onRemove:           mergeStrategy.replace,
   onMutate:           mergeStrategy.replace,
+  onPromise:          mergeStrategy.replace,
   sub:                mergeStrategy.shallow
 }
