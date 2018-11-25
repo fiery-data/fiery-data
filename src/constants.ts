@@ -1,31 +1,36 @@
 
-export const PROP_VALUE = '.value'
+export const constants = {
 
-export const PROP_UID = '.uid'
+  PROP_VALUE: '.value',
 
-export const UID_SEPARATOR = '///'
+  PROP_UID: '.uid',
 
-export const ENTRY_SEPARATOR = '/'
+  UID_SEPARATOR: '///',
 
-export const PATH_SEPARATOR = '/'
+  ENTRY_SEPARATOR: '/',
 
-export const RECORD_OPTIONS = {
-  refresh: '$refresh',
-  sync: '$sync',
-  update: '$update',
-  save: '$save',
-  remove: '$remove',
-  ref: '$ref',
-  clear: '$clear',
-  build: '$build',
-  create: '$create',
-  getChanges: '$getChanges'
+  PATH_SEPARATOR: '/',
+
+  RECORD_OPTIONS: {
+    refresh: '$refresh',
+    sync: '$sync',
+    update: '$update',
+    save: '$save',
+    remove: '$remove',
+    ref: '$ref',
+    clear: '$clear',
+    build: '$build',
+    create: '$create',
+    getChanges: '$getChanges'
+  },
+
+  EVENTS_OPTIONS: {
+    create: '$onCreate',
+    missing: '$onMissing',
+    update: '$onUpdate',
+    remove: '$onRemove',
+    destroy: '$onDestroy'
+  }
+
 }
 
-export const EVENTS_OPTIONS = {
-  create: '$onCreate',
-  missing: '$onMissing',
-  update: '$onUpdate',
-  remove: '$onRemove',
-  destroy: '$onDestroy'
-}

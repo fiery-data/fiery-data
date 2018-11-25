@@ -3,7 +3,7 @@ import * as firebase from 'firebase'
 
 
 
-import { UID_SEPARATOR, PROP_UID, PATH_SEPARATOR, ENTRY_SEPARATOR } from './constants'
+import { constants } from './constants'
 import { FieryInstance, FieryEntry, FierySource, FieryCacheEntry, FieryCache, FieryData, FieryOptions, FieryOptionsMap, FieryEntryMap } from './types'
 import { closeEntry, getEntry } from './entry'
 import { factory } from './factory'
@@ -25,7 +25,7 @@ export function destroyGlobalCache()
 
 export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore.DocumentReference, checkSubs: boolean = false): FieryCacheEntry
 {
-  const uid = entry.storeKey + UID_SEPARATOR + ref.path
+  const uid = entry.storeKey + constants.UID_SEPARATOR + ref.path
 
   if (uid in globalCache)
   {
@@ -36,7 +36,7 @@ export function getCacheForReference (entry: FieryEntry, ref: firebase.firestore
 
   const data = entry.options.newDocument()
 
-  data[PROP_UID] = uid
+  data[constants.PROP_UID] = uid
 
   const cache: FieryCacheEntry = {
     uid,
@@ -71,7 +71,7 @@ export function getCacheForDocument (entry: FieryEntry, doc: firebase.firestore.
 
 export function getCacheForData (data: FieryData): FieryCacheEntry | undefined
 {
-  return globalCache[data[PROP_UID]]
+  return globalCache[data[constants.PROP_UID]]
 }
 
 export function removeDataFromEntry (entry: FieryEntry, data: FieryData): void
@@ -239,10 +239,10 @@ export function addSubs (cache: FieryCacheEntry, entry: FieryEntry): void
       if (!hasLiveSub(cache, subProp))
       {
         let subOptions: FieryOptions = options.sub[subProp] as FieryOptions
-        let subName: string = cache.uid + ENTRY_SEPARATOR + subProp
+        let subName: string = cache.uid + constants.ENTRY_SEPARATOR + subProp
 
         let subSource: FierySource = subOptions.doc
-          ? ref.parent.doc(cache.uid.split(PATH_SEPARATOR).pop() + PATH_SEPARATOR + subProp)
+          ? ref.parent.doc(cache.uid.split(constants.PATH_SEPARATOR).pop() + constants.PATH_SEPARATOR + subProp)
           : ref.collection(subProp)
 
         let subEntry: FieryEntry = getEntry(

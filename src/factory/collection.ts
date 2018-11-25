@@ -2,7 +2,7 @@
 import * as firebase from 'firebase'
 
 
-import { PROP_UID } from '../constants'
+import { constants } from '../constants'
 import { FierySystem, FieryEntry, FieryTarget, FieryData, FieryOptions, FieryMap, FieryCacheEntry } from '../types'
 import { refreshData } from '../data'
 import { getCacheForDocument, removeCacheFromEntry, removeDataFromEntry, destroyCache } from '../cache'
@@ -87,7 +87,7 @@ export function getInitialHandler (entry: FieryEntry): OnSnapshot
       for (let i = 0; i < target.length; i++)
       {
         const data = target[i]
-        missing[data[PROP_UID]] = data
+        missing[data[constants.PROP_UID]] = data
       }
     }
 

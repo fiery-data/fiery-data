@@ -1,5 +1,5 @@
 
-import { PROP_UID, PROP_VALUE, RECORD_OPTIONS, EVENTS_OPTIONS } from './constants'
+import { constants } from './constants'
 import { FieryOptionsInput, FieryTarget, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FierySource, FieryData, FieryMap, FieryEquality, FieryMergeStrategy, FieryMergeStrategies, FieryEvents } from './types'
 import { parseDate, isObject, isFunction, isArray, coalesce, forEach, isDefined, isString } from './util'
 import * as operations from './operations'
@@ -34,13 +34,13 @@ export const globalOptions =
 
     liveOptions: {},
 
-    propValue: PROP_VALUE,
+    propValue: constants.PROP_VALUE,
 
-    recordOptions: RECORD_OPTIONS,
+    recordOptions: constants.RECORD_OPTIONS,
 
     newDocument: (encoded?: FieryData) => ({} as FieryData),
 
-    eventsOptions: EVENTS_OPTIONS,
+    eventsOptions: constants.EVENTS_OPTIONS,
 
     triggerEvent (this: FieryOptions, data: FieryData, event: FieryEvents)
     {
@@ -144,7 +144,7 @@ export function getOptions (options?: FieryOptionsInput, instance?: FieryInstanc
   }
 
   excludeMap[options.propValue as string] = true
-  excludeMap[PROP_UID] = true
+  excludeMap[constants.PROP_UID] = true
 
   forEach(options.recordOptions, (value, key) => excludeMap[value] = true)
 
