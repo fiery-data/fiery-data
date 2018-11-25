@@ -27,6 +27,7 @@ export function getInstance (systemOverrides?: Partial<FierySystem>): FieryInsta
   instance.cache = {}
   instance.pager = operations.pager
   instance.more = operations.more
+  instance.hasMore = operations.hasMore
   instance.refresh = operations.refresh
   instance.update = operations.update
   instance.save = operations.save

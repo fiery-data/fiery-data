@@ -33,6 +33,14 @@ export function more (this: FieryInstance, target: string | FieryTarget, count?:
 }
 
 
+export function hasMore (this: FieryInstance, target: string | FieryTarget): boolean
+{
+  const entry = this.entryFor(target)
+
+  return !!(entry && entry.hasMore)
+}
+
+
 export function refresh (this: FieryInstance, data: FieryData, cachedOnly: boolean = false): Promise<void>
 {
   const cache: FieryCacheEntry | undefined = getCacheForData(data)

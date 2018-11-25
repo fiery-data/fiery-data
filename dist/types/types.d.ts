@@ -134,6 +134,7 @@ export interface FieryInstance {
     linkSources: (container: any) => void;
     pager: (target: string | FieryTarget) => FieryPager | null;
     more: (target: string | FieryTarget, count?: number) => Promise<void>;
+    hasMore: (target: string | FieryTarget) => boolean;
     refresh: (data: FieryData, cachedOnly?: boolean) => Promise<void>;
     update: (data: FieryData, fields?: FieryFields) => Promise<void>;
     save: (data: FieryData, fields?: FieryFields) => Promise<void>;
@@ -207,6 +208,7 @@ export interface FieryEntry {
     query?: firebase.firestore.Query;
     requery?: (query: firebase.firestore.Query) => void;
     more?: (count?: number) => Promise<void>;
+    hasMore?: boolean;
     pager?: FieryPager;
     off?: () => any;
     id?: number;

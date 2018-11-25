@@ -43,6 +43,7 @@ export function factory (entry: FieryEntry): FieryData[]
     const initial: OnSnapshot = options.map
       ? getMapInitialHandler(entry)
       : getCollectionInitialHandler(entry)
+    const limit = options.streamInitial as number
 
     if (!entry.target)
     {
@@ -50,12 +51,14 @@ export function factory (entry: FieryEntry): FieryData[]
     }
 
     stats.queries++
+    entry.hasMore = true
 
     entry.promise = query
-      .limit(options.streamInitial as number)
+      .limit(limit)
       .get(options.onceOptions)
       .then((querySnapshot: firebase.firestore.QuerySnapshot) => {
         stats.queries++
+        entry.hasMore = querySnapshot.size >= limit
         initial(querySnapshot)
         startStream(entry, initial, query)
       })
@@ -70,6 +73,10 @@ export function factory (entry: FieryEntry): FieryData[]
       throw 'streamMore is required for streaming'
     }
 
+    if (!entry.last || !entry.hasMore) {
+      return Promise.reject('There are no more results to load.')
+    }
+
     const initial: OnSnapshot = options.map
       ? getMapInitialHandler(entry)
       : getCollectionInitialHandler(entry)
@@ -80,6 +87,7 @@ export function factory (entry: FieryEntry): FieryData[]
       .get(options.onceOptions)
       .then((querySnapshot: firebase.firestore.QuerySnapshot) => {
         stats.queries++
+        entry.hasMore = querySnapshot.size >= limit
         updatePointers(entry, querySnapshot)
         startStream(entry, initial, query)
       })
@@ -111,7 +119,11 @@ function startStream (entry: FieryEntry, initial: OnSnapshot, query: firebase.fi
     entry.off()
   }
 
-  entry.off = query.endAt(entry.last).onSnapshot(
+  if (entry.last) {
+    query = query.endAt(entry.last)
+  }
+
+  entry.off = query.onSnapshot(
     options.liveOptions,
     live,
     (reason: any) => {
