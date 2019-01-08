@@ -5,7 +5,7 @@ import * as firebase from 'firebase'
 
 import { FieryInstance, FierySystem, FieryCacheEntry, FieryOptions, FieryEntry, FieryData, FierySource, FieryChanges, FieryEquality, FieryFields, FieryTarget, FieryPager } from './types'
 import { parseDocument, encodeData, refreshData } from './data'
-import { forEach, isEqual, isDefined, isFunction, isString, getFields } from './util'
+import { forEach, isEqual, isFunction, getFields } from './util'
 import { getCacheForData, getCacheForReference } from './cache'
 import { stats } from './stats'
 import { callbacks } from './callbacks'
@@ -41,7 +41,7 @@ export function hasMore (this: FieryInstance, target: string | FieryTarget): boo
 }
 
 
-export function refresh (this: FieryInstance, data: FieryData, cachedOnly: boolean = false): Promise<void>
+export async function refresh (this: FieryInstance, data: FieryData, cachedOnly: boolean = false): Promise<void>
 {
   const cache: FieryCacheEntry | undefined = getCacheForData(data)
 
@@ -86,7 +86,7 @@ export function refresh (this: FieryInstance, data: FieryData, cachedOnly: boole
   return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
 
-export function save (this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>
+export async function save (this: FieryInstance, data: FieryData, fields?: FieryFields): Promise<void>
 {
   const cache: FieryCacheEntry | undefined = getCacheForData(data)
 
@@ -266,7 +266,7 @@ export function clear (this: FieryInstance, data: FieryData, props: FieryFields)
   return Promise.reject('The given data is out of scope and cannot be operated on.')
 }
 
-export function getChanges (this: FieryInstance,
+export async function getChanges (this: FieryInstance,
   data: FieryData,
   fieldsOrEquality: FieryFields | FieryEquality,
   equalityOrNothing?: FieryEquality): Promise<FieryChanges>

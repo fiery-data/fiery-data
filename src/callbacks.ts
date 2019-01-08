@@ -3,43 +3,43 @@ import { FieryData, FieryCacheEntry, FieryTarget, FieryEntry, FieryInstance } fr
 
 export const callbacks =
 {
-  onInvalidOperation (data: FieryData, operation: string) {},
+  onInvalidOperation (_data: FieryData, _operation: string) {},
 
-  onUpdate (data: FieryData, values: FieryData, cache: FieryCacheEntry) {},
+  onUpdate (_data: FieryData, _values: FieryData, _cache: FieryCacheEntry) {},
 
-  onSet (data: FieryData, values: FieryData, cache: FieryCacheEntry) {},
+  onSet (_data: FieryData, _values: FieryData, _cache: FieryCacheEntry) {},
 
-  onDelete (data: FieryData, cache: FieryCacheEntry) {},
+  onDelete (_data: FieryData, _cache: FieryCacheEntry) {},
 
-  onClear (data: FieryData, props: string[]) {},
+  onClear (_data: FieryData, _props: string[]) {},
 
-  onGetChanges (data: FieryData, cache: FieryCacheEntry, fields?: string[]) {},
+  onGetChanges (_data: FieryData, _cache: FieryCacheEntry, _fields?: string[]) {},
 
-  onRefresh (data: FieryData, cachedOnly?: boolean) {},
+  onRefresh (_data: FieryData, _cachedOnly?: boolean) {},
 
-  onBuild (data: FieryData, cache: FieryCacheEntry) {},
+  onBuild (_data: FieryData, _cache: FieryCacheEntry) {},
 
-  onCacheCreate (cache: FieryCacheEntry) {},
+  onCacheCreate (_cache: FieryCacheEntry) {},
 
-  onCacheDestroy (cache: FieryCacheEntry) {},
+  onCacheDestroy (_cache: FieryCacheEntry) {},
 
-  onSubCreate (data: FieryData, sub: string, cache: FieryCacheEntry) {},
+  onSubCreate (_data: FieryData, _sub: string, _cache: FieryCacheEntry) {},
 
-  onSubDestroy (data: FieryData, sub: string, cache: FieryCacheEntry) {},
+  onSubDestroy (_data: FieryData, _sub: string, _cache: FieryCacheEntry) {},
 
-  onCollectionAdd (data: FieryData, target: FieryTarget, entry: FieryEntry) {},
+  onCollectionAdd (_data: FieryData, _target: FieryTarget, _entry: FieryEntry) {},
 
-  onCollectionRemove (data: FieryData, target: FieryTarget, entry: FieryEntry) {},
+  onCollectionRemove (_data: FieryData, _target: FieryTarget, _entry: FieryEntry) {},
 
-  onCollectionModify (data: FieryData, target: FieryTarget, entry: FieryEntry) {},
+  onCollectionModify (_data: FieryData, _target: FieryTarget, _entry: FieryEntry) {},
 
-  onCollectionChanged (target: FieryTarget, entry: FieryEntry) {},
+  onCollectionChanged (_target: FieryTarget, _entry: FieryEntry) {},
 
-  onDocumentUpdate (data: FieryData, entry: FieryEntry) {},
+  onDocumentUpdate (_data: FieryData, _entry: FieryEntry) {},
 
-  onDocumentMissing (data: FieryData, entry: FieryEntry) {},
+  onDocumentMissing (_data: FieryData, _entry: FieryEntry) {},
 
-  onInstanceCreate (instance: FieryInstance) {},
+  onInstanceCreate (_instance: FieryInstance) {},
 
-  onInstanceDestroy (instance: FieryInstance) {},
+  onInstanceDestroy (_instance: FieryInstance) {},
 }

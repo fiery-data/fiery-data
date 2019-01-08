@@ -2,10 +2,10 @@
 /// <reference path="../node_modules/@types/mocha/index.d.ts" />
 /// <reference path="../node_modules/@types/chai/index.d.ts" />
 
-import $getFiery, { define, setGlobalOptions, getCacheForData } from '../src'
-import { FierySource, FieryChanges, FieryOptions, FieryTarget, FieryEntry } from '../src/types'
+import $getFiery, { define, setGlobalOptions } from '../src'
+import { FieryTarget, FieryEntry } from '../src/types'
 import { globalOptions } from '../src/options'
-import { getStore, getStored } from './util'
+import { getStore } from './util'
 import { expect } from 'chai'
 
 describe('stream', function()
@@ -185,7 +185,7 @@ describe('stream', function()
             $fiery.destroy()
 
             done()
-            
+
           }, done)
 
         }, done)

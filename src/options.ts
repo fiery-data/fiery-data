@@ -1,8 +1,7 @@
 
 import { constants } from './constants'
-import { FieryOptionsInput, FieryTarget, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FierySource, FieryData, FieryMap, FieryEquality, FieryMergeStrategy, FieryMergeStrategies, FieryEvents } from './types'
-import { parseDate, isObject, isFunction, isArray, coalesce, forEach, isDefined, isString } from './util'
-import * as operations from './operations'
+import { FieryOptionsInput, FieryTarget, FieryOptions, FieryOptionsMap, FieryInstance, FieryExclusions, FieryData, FieryMap, FieryMergeStrategy, FieryMergeStrategies, FieryEvents } from './types'
+import { parseDate, isObject, isArray, coalesce, forEach, isDefined, isString } from './util'
 
 
 
@@ -14,11 +13,11 @@ export const globalOptions =
 
   defaults:
   {
-    onError: (message: any) => {},
+    onError: (_message: any) => {},
 
     onMissing: () => {},
 
-    onSuccess: (results: any) => {},
+    onSuccess: (_results: any) => {},
 
     onRemove: () => {},
 
@@ -26,7 +25,7 @@ export const globalOptions =
       mutate()
     },
 
-    onPromise: (promise: Promise<FieryTarget>) => {},
+    onPromise: (_promise: Promise<FieryTarget>) => {},
 
     streamInitial: 20,
 
@@ -38,7 +37,7 @@ export const globalOptions =
 
     recordOptions: constants.RECORD_OPTIONS,
 
-    newDocument: (encoded?: FieryData) => ({} as FieryData),
+    newDocument: (_encoded?: FieryData) => ({} as FieryData),
 
     eventsOptions: constants.EVENTS_OPTIONS,
 
@@ -115,7 +114,7 @@ export function getOptions (options?: FieryOptionsInput, instance?: FieryInstanc
   {
     const typeConstructor = options.type
 
-    options.newDocument = (encoded?: FieryData) => (new typeConstructor() as FieryData)
+    options.newDocument = (_encoded?: FieryData) => (new typeConstructor() as FieryData)
   }
 
   if (!options.newCollection)
@@ -136,7 +135,7 @@ export function getOptions (options?: FieryOptionsInput, instance?: FieryInstanc
   }
   else if (isArray(options.exclude))
   {
-    forEach(options.exclude, (value, key) => excludeMap[value] = true)
+    forEach(options.exclude, (value, _key) => excludeMap[value] = true)
   }
   else
   {
@@ -146,7 +145,7 @@ export function getOptions (options?: FieryOptionsInput, instance?: FieryInstanc
   excludeMap[options.propValue as string] = true
   excludeMap[constants.PROP_UID] = true
 
-  forEach(options.recordOptions, (value, key) => excludeMap[value] = true)
+  forEach(options.recordOptions, (value, _key) => excludeMap[value] = true)
 
   options.exclude = excludeMap
 
@@ -244,7 +243,7 @@ export function performMerge (options: Partial<FieryOptions>, defaults?: Partial
 
 export const mergeStrategy: FieryMergeStrategies =
 {
-  ignore (options: any, defaults: any): any {
+  ignore (options: any, _defaults: any): any {
     return options
   },
   replace (options: any, defaults: any): any {

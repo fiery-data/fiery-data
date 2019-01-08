@@ -148,7 +148,7 @@ function buildSystem(systemOverrides?: Partial<FierySystem>): FierySystem
 }
 
 const defaultSystem: FierySystem = {
-  removeNamed: (name: string) => {
+  removeNamed: (_name: string) => {
 
   },
   setProperty: (target: any, property: string, value: any) => {

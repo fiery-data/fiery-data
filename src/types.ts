@@ -70,6 +70,8 @@ export interface FieryOptions
 
   query?: (source: firebase.firestore.CollectionReference) => firebase.firestore.Query
 
+  queryReverse?: (source: firebase.firestore.CollectionReference) => firebase.firestore.Query
+
   map?: boolean
 
   doc?: boolean

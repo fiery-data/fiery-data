@@ -3,7 +3,7 @@ import * as firebase from 'firebase'
 
 
 
-import { FierySource, FierySystem, FieryOptions, FieryInstance, FieryEntry, FieryData, FieryMap, FieryFields, FieryCacheEntry } from './types'
+import { FierySystem, FieryOptions, FieryEntry, FieryData, FieryFields, FieryCacheEntry } from './types'
 import { isObject, getFields } from './util'
 
 

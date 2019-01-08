@@ -1,10 +1,6 @@
 
-import * as firebase from 'firebase'
 
-
-
-import { FieryOptions, FierySource, FieryData, FieryMetadata, FieryEntry, FieryFields } from './types'
-import { getOptionsByKey } from './options'
+import { FierySource, FieryFields } from './types'
 
 
 

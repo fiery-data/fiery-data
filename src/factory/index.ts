@@ -1,7 +1,6 @@
 
 
-import { FieryInstance, FieryEntry, FieryTarget, FierySource, FieryOptions } from '../types'
-import { getEntry } from '../entry'
+import { FieryEntry, FieryTarget } from '../types'
 
 
 

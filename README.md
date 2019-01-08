@@ -455,9 +455,13 @@ $fiery.more(messages, 20)
 function searchCars(make, limit)
 {
    var options = {
-      query: cars => cars.where('make', '==', make).limit(limit)
+      query: cars => cars.where('make', '==', make).orderBy('created_at').limit(limit),
+      // required for prev() - orderBys must be in reverse
+      queryReverse: cars => cars.where('make', '==', make).orderBy('created_at', 'desc').limit(limit)
    }
-   return $fiery(fs.collection('cars'), options, 'searchCars') // name (searchCars) is required when parameterized
+
+   // name (searchCars) is required when parameterized
+   return $fiery(fs.collection('cars'), options, 'searchCars')
 }
 
 var cars = searchCars('Honda', 10) // 10 at a time

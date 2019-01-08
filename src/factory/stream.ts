@@ -8,13 +8,11 @@ import { stats } from '../stats'
 
 import {
   getInitialHandler as getCollectionInitialHandler,
-  getUpdateHandler as getCollectionUpdateHandler,
   getLiveHandler as getCollectionLiveHandler
 } from './collection'
 
 import {
   getInitialHandler as getMapInitialHandler,
-  getUpdateHandler as getMapUpdateHandler,
   getLiveHandler as getMapLiveHandler
 } from './map'
 

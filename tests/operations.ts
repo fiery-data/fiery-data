@@ -2,8 +2,8 @@
 /// <reference path="../node_modules/@types/mocha/index.d.ts" />
 /// <reference path="../node_modules/@types/chai-as-promised/index.d.ts" />
 
-import $getFiery, { define, setGlobalOptions, getCacheForData } from '../src'
-import { FierySource, FieryChanges, FieryOptionsInput } from '../src/types'
+import $getFiery, { define, setGlobalOptions } from '../src'
+import { FieryChanges, FieryOptionsInput } from '../src/types'
 import { globalOptions } from '../src/options'
 import { getStore, getStored } from './util'
 import * as chai from 'chai'
@@ -572,7 +572,7 @@ describe('operations', function()
   })
 
   // https://github.com/fiery-data/fiery-vue/issues/6
-  it('pager (#6)', function() {
+  it('pager (#6)', function(done) {
 
     const fs = getStore('operations pager (#6)', {
       'todos/1': { name: 'T1', order: 1 },
@@ -590,7 +590,8 @@ describe('operations', function()
 
     const options: FieryOptionsInput = {
       extends: 'todo',
-      query: q => q.orderBy('order').limit(1)
+      query: q => q.orderBy('order').limit(1),
+      queryReverse: q => q.orderBy('order', 'desc').limit(1)
     }
 
     const todos: any[] = $fiery(fs.collection('todos'), options, 'todos')
@@ -625,21 +626,33 @@ describe('operations', function()
       expect(pager.hasPrev()).to.be.true
       expect(pager.index).to.equal(2)
 
-      expect(pager.prev()).to.eventually.be.fulfilled
+      pager.prev().then(
+        () => {
+          expect(todos.length).to.equal(1)
+          expect(todos.map(t => t.name)).to.deep.equal(['T2'])
+          expect(pager.hasNext()).to.be.true
+          expect(pager.hasPrev()).to.be.true
+          expect(pager.index).to.equal(1)
 
-      expect(todos.length).to.equal(1)
-      expect(todos.map(t => t.name)).to.deep.equal(['T2'])
-      expect(pager.hasNext()).to.be.true
-      expect(pager.hasPrev()).to.be.true
-      expect(pager.index).to.equal(1)
+          pager.prev().then(
+            () => {
+              expect(todos.length).to.equal(1)
+              expect(todos.map(t => t.name)).to.deep.equal(['T1'])
+              expect(pager.hasNext()).to.be.true
+              expect(pager.hasPrev()).to.be.false
+              expect(pager.index).to.equal(0)
 
-      expect(pager.prev()).to.eventually.be.fulfilled
-
-      expect(todos.length).to.equal(1)
-      expect(todos.map(t => t.name)).to.deep.equal(['T1'])
-      expect(pager.hasNext()).to.be.true
-      expect(pager.hasPrev()).to.be.false
-      expect(pager.index).to.equal(0)
+              done();
+            },
+            () => {
+              throw 'Unexpected failure.'
+            }
+          )
+        },
+        () => {
+          throw 'Unexpected failure.'
+        }
+      )
     }
 
   })

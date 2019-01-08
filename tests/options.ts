@@ -2,8 +2,7 @@
 /// <reference path="../node_modules/@types/mocha/index.d.ts" />
 /// <reference path="../node_modules/@types/chai/index.d.ts" />
 
-import $getFiery, { define, setGlobalOptions, getCacheForData } from '../src'
-import { FierySource } from '../src/types'
+import $getFiery from '../src'
 import { globalOptions } from '../src/options'
 import { getStore, getStored, getTimestamp } from './util'
 import { expect } from 'chai'
@@ -137,7 +136,7 @@ describe('options', function()
       propExists: 'exists'
     }
 
-    const task = context.task = $fiery(fs.doc('tasks/2'), options, 'task')
+    context.task = $fiery(fs.doc('tasks/2'), options, 'task')
 
     expect(context.task).to.be.null
 
@@ -214,14 +213,12 @@ describe('options', function()
     $fiery.destroy()
   })
 
-  it('events', function()
+  it('events', async function()
   {
     const fs = getStore('options events', {
       'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null },
       'tasks/2': { name: 'T2', done: true, done_at: 123, done_by: 456 }
     })
-
-    const context: any = {}
 
     const $fiery = $getFiery()
 
@@ -301,14 +298,12 @@ describe('options', function()
     })
   })
 
-  it('events override', function()
+  it('events override', async function()
   {
     const fs = getStore('options events override', {
       'tasks/1': { name: 'T1', done: false, done_at: null, done_by: null },
       'tasks/2': { name: 'T2', done: true, done_at: 123, done_by: 456 }
     })
-
-    const context: any = {}
 
     const $fiery = $getFiery()
 

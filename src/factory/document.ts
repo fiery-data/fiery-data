@@ -10,7 +10,6 @@ import { callbacks } from '../callbacks'
 
 
 
-type OnSnapshot = (querySnapshot: firebase.firestore.DocumentSnapshot) => any
 type OnResolve = (target: FieryTarget) => any
 type OnReject = (reason: any) => any
 

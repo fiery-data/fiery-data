@@ -4,7 +4,7 @@ import * as firebase from 'firebase'
 
 
 import { constants } from './constants'
-import { FieryInstance, FieryEntry, FierySource, FieryCacheEntry, FieryCache, FieryData, FieryOptions, FieryOptionsMap, FieryEntryMap } from './types'
+import { FieryInstance, FieryEntry, FierySource, FieryCacheEntry, FieryCache, FieryData, FieryOptions, FieryOptionsMap } from './types'
 import { closeEntry, getEntry } from './entry'
 import { factory } from './factory'
 import { stats } from './stats'
@@ -19,7 +19,7 @@ export function destroyGlobalCache()
 {
   for (const uid in globalCache)
   {
-    destroyCache(globalCache[uid], true)
+    destroyCache(globalCache[uid])
   }
 }
 
@@ -83,7 +83,6 @@ export function removeCacheFromEntry (entry: FieryEntry, cache?: FieryCacheEntry
 {
   if (cache && cache.uid in entry.children)
   {
-    const options: FieryOptions = entry.options
     const entries: FieryEntry[] = cache.entries
 
     // remove reference to entry from cache
@@ -132,7 +131,6 @@ export function removeCacheFromEntry (entry: FieryEntry, cache?: FieryCacheEntry
 export function isReferencedSub (cache: FieryCacheEntry, sub: string): boolean
 {
   const entries: FieryEntry[] = cache.entries
-  const subs: FieryEntryMap = cache.sub
 
   for (var i = 0; i < entries.length; i++)
   {
@@ -195,7 +193,7 @@ export function removeCacheFromInstance (cache: FieryCacheEntry, instance: Fiery
   }
 }
 
-export function destroyCache (cache: FieryCacheEntry, force: boolean = false): void
+export function destroyCache (cache: FieryCacheEntry): void
 {
   const entries: FieryEntry[] = cache.entries
 

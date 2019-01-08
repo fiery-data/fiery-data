@@ -1,7 +1,7 @@
 
 
-import { FierySystem, FieryOptionsInput, FieryEntryMap, FieryOptions, FieryInstance, FieryEntry, FierySources, FierySource, FieryCache, FieryData, FieryChanges, FieryEquality, FieryFields, FieryRecordProperties } from './types'
-import { isCollectionSource, forEach, isDefined, isArray, isFunction } from './util'
+import { FieryOptionsInput, FieryOptions, FieryInstance, FieryEntry, FierySource, FieryCache, FieryData, FieryChanges, FieryEquality, FieryFields, FieryRecordProperties } from './types'
+import { forEach, isDefined, isArray, isFunction } from './util'
 import { getOptions, recycleOptions } from './options'
 import { getStoreKey } from './store'
 import { removeCacheFromEntry } from './cache'
@@ -115,7 +115,7 @@ export function getEntry (instance: FieryInstance, source: FierySource, optionsI
 export function updatePointers (entry: FieryEntry, querySnapshot: firebase.firestore.QuerySnapshot): void
 {
   const docs = querySnapshot.docs
-  
+
   entry.first = docs[0]
   entry.last = docs[docs.length - 1]
 }

@@ -2,10 +2,10 @@
 /// <reference path="../node_modules/@types/mocha/index.d.ts" />
 /// <reference path="../node_modules/@types/chai/index.d.ts" />
 
-import $getFiery, { define, setGlobalOptions, getCacheForData } from '../src'
-import { FierySource, FieryChanges, FieryOptions, FieryEntry } from '../src/types'
+import $getFiery from '../src'
+import { FieryEntry } from '../src/types'
 import { globalOptions } from '../src/options'
-import { getStore, getStored } from './util'
+import { getStore } from './util'
 import { expect } from 'chai'
 
 describe('promise', function()

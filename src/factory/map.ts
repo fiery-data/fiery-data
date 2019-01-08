@@ -98,7 +98,7 @@ export function getInitialHandler (entry: FieryEntry): OnSnapshot
 
       }, options.onError)
 
-      forEach(missing, (missed, key) => system.removeProperty(target, key as string))
+      forEach(missing, (_missed, key) => system.removeProperty(target, key as string))
 
       return target
     })

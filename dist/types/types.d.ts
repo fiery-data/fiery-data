@@ -52,6 +52,7 @@ export interface FieryOptions {
     instance?: FieryInstance;
     key?: string;
     query?: (source: firebase.firestore.CollectionReference) => firebase.firestore.Query;
+    queryReverse?: (source: firebase.firestore.CollectionReference) => firebase.firestore.Query;
     map?: boolean;
     doc?: boolean;
     ref?: boolean;

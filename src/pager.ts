@@ -1,4 +1,7 @@
 
+import * as firebase from 'firebase'
+
+
 import { FieryEntry, FieryPager, FieryTarget } from './types'
 import { isArray, isObject } from './util'
 
@@ -28,7 +31,7 @@ export function getPager(entry: FieryEntry): FieryPager
 
       if (isObject(target))
       {
-        for (let prop in target)
+        for (let _prop in target)
         {
           return true
         }
@@ -71,7 +74,7 @@ export function getPager(entry: FieryEntry): FieryPager
 
     prev(): Promise<FieryTarget>
     {
-      const { query, requery, first, off } = entry
+      const { query, requery, first, off, options } = entry
 
       if (query && requery && (first || pointer) && this.index > 0)
       {
@@ -81,11 +84,17 @@ export function getPager(entry: FieryEntry): FieryPager
 
         this.index--
 
-        if (first)
+        if (first && options.queryReverse)
         {
           delete entry.first
 
-          requery(query.endBefore(first))
+          options.queryReverse(entry.source as firebase.firestore.CollectionReference)
+            .startAfter(first)
+            .get(options.onceOptions)
+            .then((querySnapshot: firebase.firestore.QuerySnapshot) => {
+              const last = querySnapshot.docs[querySnapshot.docs.length - 1];
+              requery(query.startAt(last))
+            })
         }
         else
         {
