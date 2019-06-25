@@ -13,7 +13,6 @@
     "strictNullChecks": true,
     "sourceMap": true,
     "allowJs": false,
-    "sourceMap": true,
     "declaration": true,
     "declarationDir": "types",
     "outDir": "dist"
