@@ -20,7 +20,7 @@
         "realtime"
     ],
     "dependencies": {
-        "firebase": "^6.x.x"
+        "firebase": "^7.x.x"
     },
     "devDependencies": {
         "@types/chai": "^4.1.4",
